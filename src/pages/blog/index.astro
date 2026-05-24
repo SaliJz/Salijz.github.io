@@ -155,9 +155,10 @@ const POSTS_PER_PAGE = 10;
 
       <div class="space-y-5" id="posts-container">
         {posts.map((post, index) => (
-          <div
-            role="button"
-            tabindex="0"
+          <a
+            href={post.link}
+            target="_blank"
+            rel="noopener noreferrer"
             data-post-index={index}
             class={`post-card group flex flex-col sm:flex-row gap-5 p-6 rounded-2xl border bg-site-surface/30 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 cursor-pointer ${post.border} hover:bg-site-surface/50${index >= POSTS_PER_PAGE ? " hidden" : ""}`}
           >
@@ -203,7 +204,7 @@ const POSTS_PER_PAGE = 10;
                 Open →
               </span>
             </div>
-          </div>
+          </a>
         ))}
       </div>
 
@@ -388,7 +389,10 @@ const POSTS_PER_PAGE = 10;
     }
 
     cards.forEach(card => {
-      card.addEventListener('click', () => openBlogModal(parseInt(card.dataset.postIndex ?? '0', 10)));
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        openBlogModal(parseInt(card.dataset.postIndex ?? '0', 10));
+      });
       card.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
