@@ -59,9 +59,7 @@ export default defineConfig({
   // VERCEL_URL is injected automatically by Vercel on every deployment and lets
   // the Font API (which requires an absolute site URL) work even when SITE_URL
   // is not explicitly configured.
-  site: process.env.SITE_URL?.replace(/^http:\/\//, 'https://')
-    ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
-  base: process.env.BASE_PATH || '/',
+  site: 'https://Salijz.github.io',
   trailingSlash: 'never',
   output: 'static',
   compressHTML: true,
