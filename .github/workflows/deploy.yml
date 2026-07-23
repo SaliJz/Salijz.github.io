@@ -51,11 +51,11 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pages" \
             | jq -r '.build_type // "legacy"')
-          if [ "$SOURCE" != "workflow" ]; then
+           if [ "$SOURCE" != "workflow" ]; then
             echo ""
             echo "╔══════════════════════════════════════════════════════════════════╗"
             echo "║  GitHub Pages source is not set to 'GitHub Actions'.                   ║"
-            echo "║  Current source: $SOURCE"                                              ║"
+            echo "║  Current source: $SOURCE"
             echo "║                                                                        ║"
             echo "║  Fix: Go to Settings → Pages → Build and deployment                    ║"
             echo "║       Set Source to: GitHub Actions                                    ║"
