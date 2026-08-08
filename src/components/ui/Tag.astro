@@ -1,0 +1,46 @@
+---
+/**
+ * Tag.astro
+ * Etiqueta de CLASIFICACIÓN de contenido (p. ej. tecnologías de un
+ * proyecto: "Unity", "C#"; o filtros de plataforma: "Multiplataforma",
+ * "Game Jam"). Deliberadamente neutra — el color queda reservado para
+ * Badge (estados) y para el dorado de acento (CTA), evitando que la
+ * interfaz se sature de color en listados largos de etiquetas.
+ */
+interface Props {
+  class?: string;
+  active?: boolean;
+}
+
+const { class: className, active = false } = Astro.props;
+---
+
+<span class:list={['tag', { 'tag--active': active }, className]}>
+  <slot />
+</span>
+
+<style>
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: var(--border-width-thin) solid var(--color-border-subtle);
+    background-color: transparent;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+  }
+
+  /* Estado activo — p. ej. un filtro de proyectos actualmente seleccionado.
+     Usa el acento dorado deliberadamente aquí porque SÍ es una acción/
+     selección interactiva, no una etiqueta pasiva. */
+  .tag--active {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+</style>

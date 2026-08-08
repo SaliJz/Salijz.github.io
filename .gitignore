@@ -18,8 +18,8 @@ node_modules/
 # npm to pnmp
 .pnpm-store
 
-# github image cache — generated at build time
-src/data/github-image-cache.json
+# github image cache — generated at build time, if that helper is reintroduced
+src/data/projects/github-image-cache.json
 
 # logs
 npm-debug.log*

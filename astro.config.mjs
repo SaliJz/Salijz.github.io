@@ -71,29 +71,36 @@ export default defineConfig({
     injectRobotsSitemap(),
     stripHtmlComments(),
   ],
-  // Global font downloads via Astro Fonts API — self-hosted at build time,
-  // eliminating Google Fonts CDN requests at runtime.
+  // Astro Fonts API (self-hosted at build time, no runtime Google Fonts CDN
+  // requests / no external <link> to fonts.googleapis.com).
+  // - Bebas Neue: display/títulos (peso único 400, ya es una display face).
+  // - Inter: texto y UI general, variable weight 400–700.
+  // - Rajdhani: botones y elementos con lenguaje "técnico" de la interfaz;
+  //   uso deliberadamente acotado para no introducir variedad tipográfica
+  //   innecesaria (ver tokens.css / --font-tech).
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Inter',
-      cssVariable: '--font-inter',
+      name: 'Bebas Neue',
+      cssVariable: '--font-display',
+      weights: [400],
     },
     {
       provider: fontProviders.google(),
-      name: 'Oswald',
-      cssVariable: '--font-oswald',
-      weights: [400, 700],
+      name: 'Inter',
+      cssVariable: '--font-body',
+      weights: [400, 500, 600, 700],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Rajdhani',
+      cssVariable: '--font-tech',
+      weights: [500, 600, 700],
     },
   ],
   // Global Sharp codec defaults for all processed images.
   // Per-image `quality` props still override these.
   image: {
-    remotePatterns: [
-      { hostname: 'raw.githubusercontent.com' },
-      { hostname: 'user-images.githubusercontent.com' },
-      { hostname: 'camo.githubusercontent.com' },
-    ],
     service: {
       config: {
         jpeg: { mozjpeg: true },

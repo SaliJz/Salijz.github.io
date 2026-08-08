@@ -1,28 +1,434 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import siteData from "@/data/global/site.json";
-import Hero from "@/components/Hero.astro";
-import MarketChart from "@/components/MarketChart.astro";
-import FeaturedSlider from "@/components/FeaturedSlider.astro";
-import Portal from "@/components/Portal.astro";
-import Services from "@/components/Services.astro";
-import TransactionDesk from "@/components/TransactionDesk.astro";
-import Projects from "@/components/Projects.astro";
-import QuickHelpForm from "@/components/QuickHelpForm.astro";
-import Footer from "@/components/Footer.astro";
+/**
+ * index.astro — Style Guide temporal.
+ *
+ * Esta página NO es la Home definitiva. Es una herramienta de trabajo para
+ * validar visualmente el Design System (Etapa 2) antes de construir las
+ * secciones reales del portafolio. Se reemplazará por la Home real en una
+ * etapa posterior.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tag from '@/components/ui/Tag.astro';
+import { ExternalLink, Download, ArrowRight, Mail, Loader } from '@lucide/astro';
+
+const palette: { label: string; token: string; note?: string }[] = [
+  { label: 'Azul profundo (base)', token: '--raw-blue-950' },
+  { label: 'Azul profundo (superficie)', token: '--raw-blue-900' },
+  { label: 'Azul (marca)', token: '--raw-blue-500' },
+  { label: 'Rojo carmín', token: '--raw-red-500', note: 'acento, uso moderado' },
+  { label: 'Dorado (acento/CTA)', token: '--raw-gold-400', note: 'reservado para atención' },
+  { label: 'Negro', token: '--raw-black' },
+  { label: 'Blanco', token: '--raw-white' },
+  { label: 'Morado (secundario)', token: '--raw-purple-500', note: 'solo acentos' },
+  { label: 'Cian (secundario)', token: '--raw-cyan-500', note: 'solo acentos' },
+  { label: 'Gris', token: '--raw-gray-500' },
+];
+
+const typeSpecimens: { token: string; label: string; family: string }[] = [
+  { token: '--text-display', label: 'Display', family: 'var(--font-display)' },
+  { token: '--text-4xl', label: '4XL', family: 'var(--font-display)' },
+  { token: '--text-2xl', label: '2XL', family: 'var(--font-body)' },
+  { token: '--text-lg', label: 'LG', family: 'var(--font-body)' },
+  { token: '--text-base', label: 'Base', family: 'var(--font-body)' },
+  { token: '--text-sm', label: 'SM', family: 'var(--font-body)' },
+];
+
+const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
 ---
 
-<Layout
-  title={siteData.name}
-  description={siteData.description}
->
-  <Hero />
-  <MarketChart />
-  <FeaturedSlider />
-  <Portal />
-  <Services />
-  <TransactionDesk />
-  <Projects featuredOnly />
-  <QuickHelpForm />
-  <Footer />
-</Layout>
+<BaseLayout title="Style Guide — Design System" description="Guía de estilo temporal del sistema de diseño del portafolio.">
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <main id="main" class="guide">
+    <header class="guide__intro">
+      <Badge variant="accent">Design System · Etapa 2</Badge>
+      <h1>Style Guide</h1>
+      <p>
+        Herramienta temporal para validar la paleta, tipografía y componentes base antes de
+        construir las secciones reales del portafolio. Esta página no representa el diseño
+        definitivo de la Home.
+      </p>
+    </header>
+
+    <!-- ================= PALETA ================= -->
+    <section class="guide__section" aria-labelledby="s-color">
+      <h2 id="s-color">Paleta de color</h2>
+      <p class="guide__lead">
+        Azul profundo, rojo carmín, dorado, negro y blanco como colores principales. Morado, cian
+        y gris únicamente como acentos secundarios. El dorado se reserva para CTAs y estados
+        interactivos.
+      </p>
+      <div class="swatches">
+        {
+          palette.map((c) => (
+            <div class="swatch">
+              <div class="swatch__color" style={`background-color: var(${c.token});`} />
+              <div class="swatch__meta">
+                <span class="swatch__label">{c.label}</span>
+                <code class="swatch__token">{c.token}</code>
+                {c.note && <span class="swatch__note">{c.note}</span>}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ================= TIPOGRAFÍA ================= -->
+    <section class="guide__section" aria-labelledby="s-type">
+      <h2 id="s-type">Tipografía</h2>
+      <p class="guide__lead">
+        Dos familias, uso acotado: <strong>Bebas Neue</strong> para títulos/display,
+        <strong>Inter</strong> para texto y UI, y <strong>Rajdhani</strong> reservada a botones y
+        acentos técnicos puntuales (nunca como tercera tipografía de lectura general).
+      </p>
+
+      <div class="type-specimens">
+        {
+          typeSpecimens.map((t) => (
+            <div class="type-specimen">
+              <span class="type-specimen__meta">
+                <code>{t.token}</code>
+              </span>
+              <p style={`font-size: var(${t.token}); font-family: ${t.family}; line-height: var(--leading-tight);`}>
+                Portafolio {t.label}
+              </p>
+            </div>
+          ))
+        }
+        <div class="type-specimen">
+          <span class="type-specimen__meta"><code>--font-tech</code></span>
+          <p style="font-family: var(--font-tech); font-size: var(--text-xl); text-transform: uppercase; letter-spacing: var(--tracking-wider);">
+            Rajdhani · Botones y HUD
+          </p>
+        </div>
+      </div>
+
+      <h3>Jerarquía de encabezados</h3>
+      <div class="heading-stack">
+        <h1>H1 — Título de página</h1>
+        <h2>H2 — Título de sección</h2>
+        <h3>H3 — Subtítulo</h3>
+        <h4>H4 — Encabezado menor</h4>
+        <p>
+          Párrafo de cuerpo con <a href="#s-type">un enlace</a> de ejemplo. La legibilidad es
+          prioritaria: line-height generoso, contraste alto sobre fondo oscuro.
+        </p>
+        <p class="text-muted">Texto secundario/muted, para metadatos y descripciones de apoyo.</p>
+      </div>
+    </section>
+
+    <!-- ================= BOTONES ================= -->
+    <section class="guide__section" aria-labelledby="s-buttons">
+      <h2 id="s-buttons">Botones</h2>
+      <p class="guide__lead">Variantes, tamaños y estados. Todos comparten el mismo sistema.</p>
+
+      <div class="demo-row">
+        <Button variant="primary">
+          Descargar CV
+          <Download slot="icon-right" size={16} stroke-width={2} />
+        </Button>
+        <Button variant="secondary">
+          Ver proyectos
+          <ArrowRight slot="icon-right" size={16} stroke-width={2} />
+        </Button>
+        <Button variant="ghost">
+          <Mail slot="icon-left" size={16} stroke-width={2} />
+          Contacto
+        </Button>
+      </div>
+
+      <div class="demo-row">
+        <Button variant="primary" size="sm">Small</Button>
+        <Button variant="primary" size="md">Medium</Button>
+        <Button variant="primary" size="lg">Large</Button>
+      </div>
+
+      <div class="demo-row">
+        <Button variant="primary" href="https://github.com" ariaLabel="Repositorio de ejemplo">
+          <ExternalLink slot="icon-left" size={16} stroke-width={2} />
+          Como enlace
+        </Button>
+        <Button variant="secondary" disabled>Deshabilitado</Button>
+        <span class="demo-hint">↑ prueba hover / focus con teclado (Tab) en los botones activos</span>
+      </div>
+    </section>
+
+    <!-- ================= TARJETAS ================= -->
+    <section class="guide__section" aria-labelledby="s-cards">
+      <h2 id="s-cards">Tarjetas</h2>
+      <p class="guide__lead">Superficie compartida por proyectos, timeline, habilidades, etc.</p>
+
+      <div class="demo-grid">
+        <Card>
+          <Badge variant="info">Estática</Badge>
+          <h3>Card estándar</h3>
+          <p class="text-muted">Padding, borde y sombra base. Sin interacción.</p>
+        </Card>
+
+        <Card interactive as="article">
+          <Badge variant="success">Interactiva</Badge>
+          <h3>Card interactiva</h3>
+          <p class="text-muted">Se eleva y resalta el borde en hover / focus-within.</p>
+          <Button variant="ghost" size="sm">
+            Ver detalle
+            <ArrowRight slot="icon-right" size={14} />
+          </Button>
+        </Card>
+
+        <Card padding="lg">
+          <Badge variant="neutral">
+            <Loader size={12} />
+            Sincronizando
+          </Badge>
+          <h3>Padding grande</h3>
+          <p class="text-muted">Variante de espaciado interno para contenidos más densos.</p>
+        </Card>
+      </div>
+    </section>
+
+    <!-- ================= BADGES Y TAGS ================= -->
+    <section class="guide__section" aria-labelledby="s-badges">
+      <h2 id="s-badges">Badges y Tags</h2>
+      <p class="guide__lead">
+        <strong>Badge</strong> comunica un estado (con color semántico). <strong>Tag</strong>{' '}
+        clasifica contenido (neutro, se activa con acento dorado solo si es un filtro
+        seleccionado).
+      </p>
+
+      <div class="demo-row">
+        <Badge variant="accent">Featured</Badge>
+        <Badge variant="success">Completed</Badge>
+        <Badge variant="info">In Development</Badge>
+        <Badge variant="danger">Prototype</Badge>
+        <Badge variant="neutral">Game Jam</Badge>
+      </div>
+
+      <div class="demo-row">
+        <Tag>Unity</Tag>
+        <Tag>C#</Tag>
+        <Tag>Multiplataforma</Tag>
+        <Tag active>PC + Consola (activo)</Tag>
+      </div>
+    </section>
+
+    <!-- ================= ESPACIADO Y SUPERFICIES ================= -->
+    <section class="guide__section" aria-labelledby="s-space">
+      <h2 id="s-space">Espaciado y superficies</h2>
+      <p class="guide__lead">Escala base 4px y los tres niveles de superficie del sitio.</p>
+
+      <div class="spacing-scale">
+        {
+          spacingScale.map((s) => (
+            <div class="spacing-row">
+              <code>--space-{s}</code>
+              <div class="spacing-bar" style={`width: var(--space-${s});`} />
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="surface-row">
+        <div class="surface-block" style="background-color: var(--color-bg-base);">bg-base</div>
+        <div class="surface-block" style="background-color: var(--color-bg-surface);">bg-surface</div>
+        <div class="surface-block" style="background-color: var(--color-bg-surface-alt);">
+          bg-surface-alt
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .guide {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-6) var(--space-32);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+  }
+
+  .guide__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-block: var(--space-8);
+    border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
+  }
+
+  .guide__intro h1 {
+    font-size: var(--text-display);
+  }
+
+  .guide__intro p {
+    max-width: 42rem;
+    color: var(--color-text-secondary);
+  }
+
+  .guide__section h2 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .guide__lead {
+    color: var(--color-text-secondary);
+    max-width: 46rem;
+    margin-bottom: var(--space-8);
+  }
+
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+
+  /* -- swatches -- */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .swatch {
+    border: var(--border-width-thin) solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-bg-surface);
+  }
+
+  .swatch__color {
+    height: 72px;
+    border-bottom: var(--border-width-thin) solid var(--color-border-default);
+  }
+
+  .swatch__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+  }
+
+  .swatch__label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .swatch__token {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .swatch__note {
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  /* -- typography -- */
+  .type-specimens {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-10);
+  }
+
+  .type-specimen {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    align-items: baseline;
+    gap: var(--space-4);
+    border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
+    padding-block: var(--space-2);
+  }
+
+  .type-specimen__meta code {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .heading-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  /* -- demo rows / grids -- */
+  .demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .demo-hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .demo-grid h3 {
+    margin-block: var(--space-2);
+  }
+
+  /* -- spacing scale -- */
+  .spacing-scale {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-10);
+  }
+
+  .spacing-row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .spacing-row code {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .spacing-bar {
+    height: var(--space-3);
+    background-color: var(--color-accent);
+    border-radius: var(--radius-sm);
+  }
+
+  /* -- surfaces -- */
+  .surface-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .surface-block {
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width-thin) solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .type-specimen,
+    .spacing-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+  }
+</style>

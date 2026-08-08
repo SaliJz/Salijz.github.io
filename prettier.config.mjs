@@ -1,7 +1,7 @@
 /** @type {import("prettier").Config} */
 export default {
   // Astro file support
-  plugins: ['prettier-plugin-astro', 'prettier-plugin-tailwindcss'],
+  plugins: ['prettier-plugin-astro'],
 
   // Style preferences
   semi: true,

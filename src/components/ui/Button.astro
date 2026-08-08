@@ -1,0 +1,169 @@
+---
+/**
+ * Button.astro
+ * Botón base del sistema. Todo botón del portafolio (Header, Hero,
+ * Contacto, tarjetas de proyecto...) debe usar este componente para
+ * garantizar que "todos los botones pertenezcan al mismo sistema visual"
+ * (requisito de la dirección artística).
+ *
+ * Renderiza <a> cuando recibe `href`, o <button> en caso contrario.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  type?: HTMLAttributes<'button'>['type'];
+  disabled?: boolean;
+  class?: string;
+  ariaLabel?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  disabled = false,
+  class: className,
+  ariaLabel,
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  href={href}
+  type={!href ? type : undefined}
+  disabled={!href && disabled ? true : undefined}
+  aria-disabled={href && disabled ? 'true' : undefined}
+  aria-label={ariaLabel}
+>
+  <span class="btn__icon btn__icon--left">
+    <slot name="icon-left" />
+  </span>
+  <span class="btn__label"><slot /></span>
+  <span class="btn__icon btn__icon--right">
+    <slot name="icon-right" />
+  </span>
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-tech);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-radius: var(--radius-md);
+    border: var(--border-width-medium) solid transparent;
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      box-shadow var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+  }
+
+  .btn:hover {
+    color: inherit;
+  }
+
+  /* -- tamaños -- */
+  .btn--sm {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-xs);
+  }
+
+  .btn--md {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+  }
+
+  .btn--lg {
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--text-md);
+  }
+
+  /* -- variante primaria: dorado, la acción principal -- */
+  .btn--primary {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-text-inverse);
+  }
+
+  .btn--primary:hover {
+    background-color: var(--color-interactive-hover);
+    border-color: var(--color-interactive-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-accent-glow);
+  }
+
+  .btn--primary:active {
+    background-color: var(--color-interactive-active);
+    border-color: var(--color-interactive-active);
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  /* -- variante secundaria: contorno azul, acción de apoyo -- */
+  .btn--secondary {
+    background-color: transparent;
+    border-color: var(--color-border-strong);
+    color: var(--color-text-primary);
+  }
+
+  .btn--secondary:hover {
+    border-color: var(--color-brand-primary);
+    background-color: var(--color-bg-surface-alt);
+    transform: translateY(-2px);
+  }
+
+  .btn--secondary:active {
+    transform: translateY(0);
+    background-color: var(--color-bg-surface);
+  }
+
+  /* -- variante ghost: sin fondo/borde, para acciones terciarias -- */
+  .btn--ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--color-text-secondary);
+  }
+
+  .btn--ghost:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface);
+  }
+
+  .btn--ghost:active {
+    color: var(--color-text-secondary);
+  }
+
+  /* -- disabled: mismo para las tres variantes -- */
+  .btn:disabled,
+  .btn[aria-disabled='true'] {
+    cursor: not-allowed;
+    background-color: var(--color-interactive-disabled-bg);
+    border-color: var(--color-interactive-disabled-bg);
+    color: var(--color-interactive-disabled-text);
+    transform: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .btn__icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn__icon:empty {
+    display: none;
+  }
+</style>

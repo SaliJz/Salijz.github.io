@@ -1,0 +1,45 @@
+---
+// Layout base mínimo. Se ampliará en etapas posteriores (Design System,
+// Header/Footer globales, i18n, JSON-LD de tipo Person) sin necesidad de
+// reescribir esta lógica base, que es genérica y reutilizable.
+import { ClientRouter } from 'astro:transitions';
+import '@/styles/global.css';
+import { withBase } from '@/lib/assetPath';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Portafolio profesional.' } = Astro.props;
+
+// Reutilizado del Layout.astro original: normaliza la URL canónica y fuerza
+// https:// para evitar mixed content si SITE_URL llega mal configurada.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Favicon: se conservan los archivos existentes como placeholder
+         hasta que se genere el set definitivo con la identidad del portafolio. -->
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="icon" href={withBase('/images/favicons/favicon.ico')} sizes="any" />
+    <link rel="apple-touch-icon" href={withBase('/images/favicons/apple-icon-180x180.png')} />
+    <link rel="manifest" href={withBase('/manifest.json')} />
+
+    <title>{title}</title>
+
+    <ClientRouter />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
