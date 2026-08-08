@@ -1,11 +1,14 @@
 ---
 /**
- * index.astro — Style Guide temporal.
+ * index.astro — entorno temporal de validación.
  *
- * Esta página NO es la Home definitiva. Es una herramienta de trabajo para
- * validar visualmente el Design System (Etapa 2) antes de construir las
- * secciones reales del portafolio. Se reemplazará por la Home real en una
- * etapa posterior.
+ * Esta página NO es la Home definitiva. Sirve para probar el Layout Global
+ * (Header, Footer, navegación, header contraído, selector de idioma) de la
+ * Etapa 3 y conserva, más abajo, el Style Guide del Design System de la
+ * Etapa 2 como referencia. Las secciones home/about/projects/skills/
+ * certificates/contact son placeholders con la altura suficiente para
+ * probar el scroll y el header sticky — su contenido real llegará en
+ * etapas posteriores.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Button from '@/components/ui/Button.astro';
@@ -13,6 +16,14 @@ import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Tag from '@/components/ui/Tag.astro';
 import { ExternalLink, Download, ArrowRight, Mail, Loader } from '@lucide/astro';
+
+const placeholderSections: { id: string; label: string; stage: string }[] = [
+  { id: 'about', label: 'Sobre mí', stage: 'Etapa 5' },
+  { id: 'projects', label: 'Proyectos', stage: 'Etapa 5' },
+  { id: 'skills', label: 'Habilidades', stage: 'Etapa 5' },
+  { id: 'certificates', label: 'Certificados', stage: 'Etapa 5' },
+  { id: 'contact', label: 'Contacto', stage: 'Etapa 5' },
+];
 
 const palette: { label: string; token: string; note?: string }[] = [
   { label: 'Azul profundo (base)', token: '--raw-blue-950' },
@@ -39,19 +50,54 @@ const typeSpecimens: { token: string; label: string; family: string }[] = [
 const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
 ---
 
-<BaseLayout title="Style Guide — Design System" description="Guía de estilo temporal del sistema de diseño del portafolio.">
+<BaseLayout title="Portafolio — en construcción" description="Entorno temporal de validación del Layout Global y el Design System.">
   <a href="#main" class="skip-link">Saltar al contenido</a>
 
-  <main id="main" class="guide">
-    <header class="guide__intro">
-      <Badge variant="accent">Design System · Etapa 2</Badge>
-      <h1>Style Guide</h1>
-      <p>
-        Herramienta temporal para validar la paleta, tipografía y componentes base antes de
-        construir las secciones reales del portafolio. Esta página no representa el diseño
-        definitivo de la Home.
+  <main id="main">
+    <!-- ================= PLACEHOLDER: HOME / HERO ================= -->
+    <section id="home" class="placeholder-section placeholder-section--hero">
+      <Badge variant="accent">Layout Global · Etapa 3</Badge>
+      <h1>Portafolio en construcción</h1>
+      <p class="guide__lead">
+        Esta sección ocupa el lugar del futuro Hero. Por ahora solo sirve para probar el Header
+        (normal / contraído / móvil), el selector de idioma y el scroll bajo el header sticky.
+        Desplázate para ver el resto de anclas de navegación y, más abajo, el Style Guide del
+        Design System.
       </p>
-    </header>
+      <div class="demo-row">
+        <Button variant="primary" href="#projects">
+          Ir a "Proyectos"
+          <ArrowRight slot="icon-right" size={16} />
+        </Button>
+        <Button variant="secondary" href="#style-guide">Ver Style Guide</Button>
+      </div>
+    </section>
+
+    <!-- ================= PLACEHOLDERS: resto de anclas del nav ================= -->
+    {
+      placeholderSections.map((s) => (
+        <section id={s.id} class="placeholder-section">
+          <Badge variant="neutral">Placeholder — contenido real en {s.stage}</Badge>
+          <h2>{s.label}</h2>
+          <p class="guide__lead">
+            Ancla de navegación funcional (el header resalta este ítem al hacer scroll hasta
+            aquí), sin contenido definitivo todavía.
+          </p>
+        </section>
+      ))
+    }
+
+    <!-- ================= STYLE GUIDE (Etapa 2, sin cambios de contenido) ================= -->
+    <div id="style-guide" class="guide">
+      <header class="guide__intro">
+        <Badge variant="accent">Design System · Etapa 2</Badge>
+        <h1>Style Guide</h1>
+        <p>
+          Herramienta temporal para validar la paleta, tipografía y componentes base antes de
+          construir las secciones reales del portafolio. Esta página no representa el diseño
+          definitivo de la Home.
+        </p>
+      </header>
 
     <!-- ================= PALETA ================= -->
     <section class="guide__section" aria-labelledby="s-color">
@@ -239,11 +285,42 @@ const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
         </div>
       </div>
     </section>
+    </div>
   </main>
 </BaseLayout>
 
 <style>
+  .placeholder-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--space-4);
+    min-height: 70vh;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-6);
+    border-bottom: var(--border-width-thin) dashed var(--color-border-subtle);
+  }
+
+  .placeholder-section--hero {
+    min-height: calc(100svh - var(--header-height));
+  }
+
+  .placeholder-section h1 {
+    font-size: var(--text-display);
+  }
+
+  .placeholder-section h2 {
+    font-size: var(--text-3xl);
+  }
+
+  .placeholder-section .guide__lead {
+    margin-bottom: 0;
+  }
+
   .guide {
+
     max-width: 72rem;
     margin-inline: auto;
     padding: var(--space-16) var(--space-6) var(--space-32);

@@ -23,6 +23,14 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   color-scheme: dark;
+
+  /* Ajuste mínimo del Design System necesario para la Etapa 3: altura de
+     referencia del Header sticky, para que los enlaces de ancla del nav
+     no dejen el contenido oculto debajo del header. No es un color/tipo/
+     espaciado "de marca", es una constante estructural de layout — se
+     documenta aquí en vez de en tokens.css por esa razón. */
+  --header-height: 4.5rem;
+  scroll-padding-top: var(--header-height);
 }
 
 img,

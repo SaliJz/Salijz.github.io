@@ -1,0 +1,501 @@
+---
+/**
+ * Header.astro
+ * Header global sticky del portafolio. Estructura persistente — sin
+ * contenido real de las secciones, solo navegación por anclas (#home,
+ * #about, #projects, #skills, #certificates, #contact) a las que las
+ * páginas reales apuntarán en etapas posteriores.
+ *
+ * Comportamientos (ver <script> más abajo):
+ *  - Header contraído (desktop): oculta el texto de los enlaces, deja los
+ *    iconos, persiste la preferencia en sessionStorage. Un script mínimo
+ *    e inline en <head> (BaseLayout) aplica el estado guardado antes del
+ *    primer paint para evitar parpadeo (FOUC).
+ *  - Navegación móvil: NO es el header contraído encogido — es un patrón
+ *    distinto (drawer a pantalla completa) porque encoger todo en móvil
+ *    rompería la legibilidad y el tamaño de toque.
+ *  - Estado activo de sección: IntersectionObserver marca con
+ *    aria-current el enlace de la sección visible en cada momento.
+ */
+import { House, User, Folder, Settings, Award, Mail, PanelLeftClose, Menu, X } from '@lucide/astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface NavItem {
+  id: string;
+  href: string;
+  label: string;
+  icon: typeof House;
+  microClass: string;
+}
+
+const navItems: NavItem[] = [
+  { id: 'home', href: '#home', label: 'Inicio', icon: House, microClass: 'nav-link--shiver' },
+  { id: 'about', href: '#about', label: 'Sobre mí', icon: User, microClass: 'nav-link--tilt' },
+  { id: 'projects', href: '#projects', label: 'Proyectos', icon: Folder, microClass: 'nav-link--open' },
+  { id: 'skills', href: '#skills', label: 'Habilidades', icon: Settings, microClass: 'nav-link--spin' },
+  { id: 'certificates', href: '#certificates', label: 'Certificados', icon: Award, microClass: 'nav-link--glow' },
+  { id: 'contact', href: '#contact', label: 'Contacto', icon: Mail, microClass: 'nav-link--pulse' },
+];
+---
+
+<header class="header" data-header>
+  <div class="header__inner">
+    <a href="#home" class="brand" data-nav-link aria-label="Portafolio — ir al inicio">
+      <span class="brand__mark" aria-hidden="true">P/</span>
+      <span class="brand__label">Portafolio</span>
+    </a>
+
+    <button
+      type="button"
+      class="header__mobile-toggle"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      data-mobile-toggle
+    >
+      <Menu class="icon icon--open" size={22} stroke-width={1.75} />
+      <X class="icon icon--close" size={22} stroke-width={1.75} />
+    </button>
+
+    <nav class="nav" id="primary-nav" aria-label="Navegación principal" data-nav>
+      <ul class="nav__list">
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href} class={`nav-link ${item.microClass}`} data-nav-link data-nav-id={item.id}>
+                <item.icon class="nav-link__icon" size={20} stroke-width={1.75} aria-hidden="true" />
+                <span class="nav-link__label">{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="nav__utilities">
+        <LanguageSwitcher />
+
+        <button
+          type="button"
+          class="header__collapse-toggle"
+          aria-label="Contraer navegación"
+          aria-pressed="false"
+          data-collapse-toggle
+        >
+          <PanelLeftClose class="icon" size={20} stroke-width={1.75} />
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    width: 100%;
+    border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
+  }
+
+  /* El fondo semitransparente con blur vive en un pseudo-elemento, NO
+     directamente en .header: aplicar backdrop-filter al propio .header
+     lo convierte en containing block de sus descendientes con
+     position:fixed (el <nav> del drawer móvil), rompiendo su
+     posicionamiento respecto al viewport. Con el blur aislado en ::before,
+     .header se mantiene "limpio" de filtros y el drawer se posiciona
+     correctamente. */
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--color-bg-overlay);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    max-width: 90rem;
+    margin-inline: auto;
+    padding: var(--space-3) var(--space-6);
+    min-height: var(--header-height);
+  }
+
+  /* -------------------- brand -------------------- */
+
+  .brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-primary);
+    flex-shrink: 0;
+  }
+
+  .brand__mark {
+    color: var(--color-accent);
+  }
+
+  /* Temblor breve y sutil en hover — único microdetalle permitido para el
+     logo/entrada "Portafolio" en esta etapa. */
+  .brand:hover .brand__mark,
+  .brand:focus-visible .brand__mark {
+    animation: shiver var(--duration-slow) var(--ease-standard);
+  }
+
+  @keyframes shiver {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-1.5px) rotate(-1deg);
+    }
+    40% {
+      transform: translateX(1.5px) rotate(1deg);
+    }
+    60% {
+      transform: translateX(-1px) rotate(-0.5deg);
+    }
+    80% {
+      transform: translateX(1px) rotate(0.5deg);
+    }
+  }
+
+  /* -------------------- mobile toggle -------------------- */
+
+  .header__mobile-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+  }
+
+  .header__mobile-toggle:hover {
+    background-color: var(--color-bg-surface-alt);
+  }
+
+  .header__mobile-toggle .icon--close {
+    display: none;
+  }
+
+  .header[data-mobile-open='true'] .header__mobile-toggle .icon--open {
+    display: none;
+  }
+
+  .header[data-mobile-open='true'] .header__mobile-toggle .icon--close {
+    display: block;
+  }
+
+  /* -------------------- nav -------------------- */
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-family: var(--font-tech);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .nav-link:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface-alt);
+  }
+
+  .nav-link:active {
+    background-color: var(--color-bg-surface);
+    transform: scale(0.97);
+  }
+
+  .nav-link[aria-current='true'] {
+    color: var(--color-accent);
+  }
+
+  .nav-link[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .nav-link__icon {
+    flex-shrink: 0;
+    transition: transform var(--duration-base) var(--ease-standard);
+  }
+
+  /* -- microinteracciones puntuales por ítem de navegación -- */
+
+  .nav-link--tilt:hover .nav-link__icon,
+  .nav-link--tilt:focus-visible .nav-link__icon {
+    transform: rotate(-8deg);
+  }
+
+  .nav-link--open:hover .nav-link__icon,
+  .nav-link--open:focus-visible .nav-link__icon {
+    transform: scale(1.08) skewX(-4deg);
+  }
+
+  .nav-link--spin:hover .nav-link__icon,
+  .nav-link--spin:focus-visible .nav-link__icon {
+    transform: rotate(45deg);
+  }
+
+  .nav-link--glow:hover .nav-link__icon,
+  .nav-link--glow:focus-visible .nav-link__icon {
+    filter: drop-shadow(0 0 4px var(--color-accent));
+    color: var(--color-accent);
+  }
+
+  .nav-link--pulse:hover .nav-link__icon,
+  .nav-link--pulse:focus-visible .nav-link__icon {
+    animation: pulse-scale var(--duration-slow) var(--ease-standard);
+  }
+
+  @keyframes pulse-scale {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.18);
+    }
+  }
+
+  /* -------------------- nav utilities (lang + collapse) -------------------- */
+
+  .nav__utilities {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-left: var(--space-4);
+    border-left: var(--border-width-thin) solid var(--color-border-subtle);
+  }
+
+  .header__collapse-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    border: var(--border-width-thin) solid transparent;
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard),
+      transform var(--duration-base) var(--ease-standard);
+  }
+
+  .header__collapse-toggle:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface-alt);
+  }
+
+  .header__collapse-toggle .icon {
+    transition: transform var(--duration-base) var(--ease-standard);
+  }
+
+  /* -------------------- estado: header contraído (desktop) -------------------- */
+  /* La fuente de verdad es el atributo data-header-collapsed en <html>,
+     fijado de forma síncrona por un script inline en BaseLayout <head>
+     (antes del primer paint) para evitar parpadeo al recargar la página
+     con el header ya contraído. */
+
+  :global(html[data-header-collapsed='true']) .nav-link__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  :global(html[data-header-collapsed='true']) .nav-link {
+    padding-inline: var(--space-3);
+  }
+
+  :global(html[data-header-collapsed='true']) .header__collapse-toggle .icon {
+    transform: rotate(180deg);
+  }
+
+  /* -------------------- responsive: tablet / móvil -------------------- */
+
+  @media (max-width: 900px) {
+    .header__mobile-toggle {
+      display: inline-flex;
+    }
+
+    .header__collapse-toggle {
+      display: none; /* el contraído es un concepto de escritorio; en móvil se usa el drawer */
+    }
+
+    .nav {
+      position: fixed;
+      inset: var(--header-height) 0 0 0;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      padding: var(--space-6);
+      background-color: var(--color-bg-base);
+      border-top: var(--border-width-thin) solid var(--color-border-subtle);
+
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition:
+        opacity var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out),
+        visibility var(--duration-base);
+    }
+
+    .header[data-mobile-open='true'] .nav {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .nav-link {
+      padding: var(--space-4);
+      font-size: var(--text-md);
+    }
+
+    /* En el drawer móvil el texto SIEMPRE es visible, incluso si el header
+       quedó marcado como "contraído" desde el modo escritorio. */
+    :global(html[data-header-collapsed='true']) .nav-link__label {
+      position: static;
+      width: auto;
+      height: auto;
+      clip: auto;
+      white-space: normal;
+    }
+
+    .nav__utilities {
+      margin-top: var(--space-6);
+      padding-top: var(--space-6);
+      padding-left: 0;
+      border-left: none;
+      border-top: var(--border-width-thin) solid var(--color-border-subtle);
+      justify-content: space-between;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand:hover .brand__mark,
+    .nav-link--pulse:hover .nav-link__icon {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const COLLAPSE_KEY = 'portfolio:header-collapsed';
+
+  function initHeader(header: HTMLElement) {
+    const mobileToggle = header.querySelector<HTMLButtonElement>('[data-mobile-toggle]');
+    const collapseToggle = header.querySelector<HTMLButtonElement>('[data-collapse-toggle]');
+    const navLinks = header.querySelectorAll<HTMLAnchorElement>('[data-nav-id]');
+
+    // -- menú móvil --
+    mobileToggle?.addEventListener('click', () => {
+      const isOpen = header.dataset.mobileOpen === 'true';
+      header.dataset.mobileOpen = String(!isOpen);
+      mobileToggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    navLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        header.dataset.mobileOpen = 'false';
+        mobileToggle?.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // -- header contraído (desktop), persistido en sessionStorage --
+    // La fuente de verdad visual es html[data-header-collapsed]; ver nota
+    // en el <style> y el script inline de BaseLayout (anti-FOUC).
+    const syncCollapseControl = (collapsed: boolean) => {
+      collapseToggle?.setAttribute('aria-pressed', String(collapsed));
+      collapseToggle?.setAttribute('aria-label', collapsed ? 'Expandir navegación' : 'Contraer navegación');
+    };
+
+    syncCollapseControl(document.documentElement.dataset.headerCollapsed === 'true');
+
+    collapseToggle?.addEventListener('click', () => {
+      const next = document.documentElement.dataset.headerCollapsed !== 'true';
+      document.documentElement.dataset.headerCollapsed = String(next);
+      syncCollapseControl(next);
+      try {
+        sessionStorage.setItem(COLLAPSE_KEY, String(next));
+      } catch {
+        /* sessionStorage no disponible — el estado simplemente no persiste */
+      }
+    });
+
+    // -- sección activa (scroll-spy ligero) --
+    const sections = Array.from(navLinks)
+      .map((link) => document.getElementById(link.dataset.navId ?? ''))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length > 0 && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach((link) => {
+              link.removeAttribute('aria-current');
+              if (link.dataset.navId === entry.target.id) link.setAttribute('aria-current', 'true');
+            });
+          });
+        },
+        { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
+      );
+      sections.forEach((section) => observer.observe(section));
+    }
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-header]').forEach(initHeader);
+  }
+
+  document.addEventListener('astro:page-load', initAll);
+</script>

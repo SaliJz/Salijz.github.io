@@ -1,10 +1,12 @@
 ---
-// Layout base mínimo. Se ampliará en etapas posteriores (Design System,
-// Header/Footer globales, i18n, JSON-LD de tipo Person) sin necesidad de
-// reescribir esta lógica base, que es genérica y reutilizable.
+// Layout base del portafolio. Reutiliza toda la lógica genérica ya
+// aprobada (URL canónica, favicons, ClientRouter) e integra el Layout
+// Global (Header + Footer) construido en la Etapa 3.
 import { ClientRouter } from 'astro:transitions';
 import '@/styles/global.css';
 import { withBase } from '@/lib/assetPath';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
 
 interface Props {
   title: string;
@@ -38,8 +40,23 @@ if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
     <title>{title}</title>
 
     <ClientRouter />
+
+    <!-- Anti-FOUC: aplica el estado guardado del Header contraído antes del
+         primer paint. Bloqueante e intencionalmente mínimo (una lectura de
+         sessionStorage); ver Header.astro para el resto de la lógica. -->
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem('portfolio:header-collapsed') === 'true') {
+          document.documentElement.dataset.headerCollapsed = 'true';
+        }
+      } catch {
+        /* sessionStorage no disponible — el header simplemente arranca expandido */
+      }
+    </script>
   </head>
   <body>
+    <Header />
     <slot />
+    <Footer />
   </body>
 </html>

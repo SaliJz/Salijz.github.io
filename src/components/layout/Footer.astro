@@ -1,0 +1,191 @@
+---
+/**
+ * Footer.astro
+ * Barra de estado inferior tipo software/HUD — deliberadamente NO se ve
+ * como un footer web tradicional (sin columnas de enlaces, sin "© 2026
+ * Todos los derechos reservados" en tipografía genérica).
+ *
+ * Todo el contenido es placeholder: los datos reales (nombre, especialidad,
+ * versión, fecha) llegarán con `src/data/site.ts` en una etapa posterior.
+ * El botón "volver arriba" sí es funcional ya en esta etapa.
+ */
+import { ArrowUp, CircleDot } from '@lucide/astro';
+
+const placeholder = {
+  name: 'Nombre Apellido',
+  role: 'Game Developer · Technical Designer · QA',
+  version: 'v0.3.0-etapa3',
+  lastUpdate: '2026-08-07',
+};
+---
+
+<footer class="status-bar" data-status-bar>
+  <div class="status-bar__inner">
+    <div class="status-bar__group">
+      <span class="status-bar__item status-bar__item--name">{placeholder.name}</span>
+      <span class="status-bar__separator" aria-hidden="true">·</span>
+      <span class="status-bar__item status-bar__item--muted">{placeholder.role}</span>
+    </div>
+
+    <div class="status-bar__group status-bar__group--center">
+      <span class="status-bar__item status-bar__item--muted">{placeholder.version}</span>
+      <span class="status-bar__separator" aria-hidden="true">·</span>
+      <span class="status-bar__item status-bar__item--muted">Última actualización: {placeholder.lastUpdate}</span>
+    </div>
+
+    <div class="status-bar__group status-bar__group--end">
+      <span class="status-bar__status" role="status">
+        <CircleDot class="status-bar__status-icon" size={12} stroke-width={2.5} aria-hidden="true" />
+        <span class="status-bar__item">SYSTEM STATUS</span>
+        <span class="status-bar__status-label">ONLINE</span>
+      </span>
+
+      <button type="button" class="status-bar__top" data-back-to-top aria-label="Volver al inicio">
+        <ArrowUp size={16} stroke-width={2} />
+      </button>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .status-bar {
+    position: relative;
+    z-index: var(--z-surface-raised);
+    border-top: var(--border-width-thin) solid var(--color-border-default);
+    background-color: var(--color-bg-surface);
+  }
+
+  .status-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    max-width: 90rem;
+    margin-inline: auto;
+    padding: var(--space-3) var(--space-6);
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    flex-wrap: wrap;
+  }
+
+  .status-bar__group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+  }
+
+  .status-bar__group--center {
+    color: var(--color-text-muted);
+  }
+
+  .status-bar__group--end {
+    gap: var(--space-4);
+  }
+
+  .status-bar__item {
+    color: var(--color-text-secondary);
+  }
+
+  .status-bar__item--name {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+  }
+
+  .status-bar__item--muted {
+    color: var(--color-text-muted);
+  }
+
+  .status-bar__separator {
+    color: var(--color-text-muted);
+  }
+
+  .status-bar__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .status-bar__status-icon {
+    color: var(--raw-success);
+    animation: status-blink 2.4s var(--ease-standard) infinite;
+  }
+
+  @keyframes status-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .status-bar__status-label {
+    color: var(--raw-success);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .status-bar__top {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-sm);
+    border: var(--border-width-thin) solid var(--color-border-default);
+    color: var(--color-text-secondary);
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-out);
+  }
+
+  .status-bar__top:hover {
+    color: var(--color-accent);
+    border-color: var(--color-border-accent);
+    transform: translateY(-2px);
+  }
+
+  .status-bar__top:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 700px) {
+    .status-bar__inner {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .status-bar__group--center {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .status-bar__status-icon {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function initFooter(footer: HTMLElement) {
+    const button = footer.querySelector<HTMLButtonElement>('[data-back-to-top]');
+    button?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-status-bar]').forEach(initFooter);
+  }
+
+  document.addEventListener('astro:page-load', initAll);
+</script>
