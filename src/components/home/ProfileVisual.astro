@@ -1,0 +1,162 @@
+---
+/**
+ * ProfileVisual.astro
+ * Contenedor de la fotografía profesional con tratamiento HUD (marco con
+ * esquinas técnicas + indicador de estado), coherente con las tarjetas del
+ * Design System — no es una imagen circular "pegada" sobre la página.
+ *
+ * Todavía no existe el asset definitivo: se usa un placeholder (icono +
+ * superficie del Design System) claramente reemplazable. Cuando exista la
+ * foto real, basta con pasar `src` para que se muestre en su lugar.
+ */
+import { User, CircleDot } from '@lucide/astro';
+
+interface Props {
+  src?: string;
+  alt?: string;
+}
+
+const { src, alt = 'Fotografía profesional — próximamente' } = Astro.props;
+---
+
+<div class="profile-visual">
+  <div class="profile-visual__frame">
+    {
+      src ? (
+        <img src={src} alt={alt} class="profile-visual__photo" width="320" height="320" />
+      ) : (
+        <div class="profile-visual__placeholder" role="img" aria-label={alt}>
+          <User size={64} stroke-width={1.25} />
+        </div>
+      )
+    }
+
+    <span class="profile-visual__corner profile-visual__corner--tl" aria-hidden="true"></span>
+    <span class="profile-visual__corner profile-visual__corner--tr" aria-hidden="true"></span>
+    <span class="profile-visual__corner profile-visual__corner--bl" aria-hidden="true"></span>
+    <span class="profile-visual__corner profile-visual__corner--br" aria-hidden="true"></span>
+  </div>
+
+  <span class="profile-visual__status">
+    <CircleDot size={10} stroke-width={2.5} aria-hidden="true" />
+    Disponible
+  </span>
+</div>
+
+<style>
+  .profile-visual {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+
+  .profile-visual__frame {
+    position: relative;
+    width: 9rem;
+    height: 9rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-bg-surface);
+    border: var(--border-width-thin) solid var(--color-border-default);
+    box-shadow: var(--shadow-md);
+  }
+
+  .profile-visual__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-visual__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    background: linear-gradient(160deg, var(--color-bg-surface-alt), var(--color-bg-surface));
+  }
+
+  /* Esquinas técnicas tipo HUD — reemplazan el tratamiento "foto circular
+     genérica" por algo coherente con la dirección artística. */
+  .profile-visual__corner {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border-color: var(--color-accent);
+    border-style: solid;
+    border-width: 0;
+    pointer-events: none;
+  }
+
+  .profile-visual__corner--tl {
+    top: -1px;
+    left: -1px;
+    border-top-width: var(--border-width-medium);
+    border-left-width: var(--border-width-medium);
+    border-top-left-radius: var(--radius-sm);
+  }
+
+  .profile-visual__corner--tr {
+    top: -1px;
+    right: -1px;
+    border-top-width: var(--border-width-medium);
+    border-right-width: var(--border-width-medium);
+    border-top-right-radius: var(--radius-sm);
+  }
+
+  .profile-visual__corner--bl {
+    bottom: -1px;
+    left: -1px;
+    border-bottom-width: var(--border-width-medium);
+    border-left-width: var(--border-width-medium);
+    border-bottom-left-radius: var(--radius-sm);
+  }
+
+  .profile-visual__corner--br {
+    bottom: -1px;
+    right: -1px;
+    border-bottom-width: var(--border-width-medium);
+    border-right-width: var(--border-width-medium);
+    border-bottom-right-radius: var(--radius-sm);
+  }
+
+  .profile-visual__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    border: var(--border-width-thin) solid var(--color-border-default);
+    background-color: var(--color-bg-surface);
+    color: var(--raw-success);
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+  }
+
+  .profile-visual__status :global(svg) {
+    animation: status-blink 2.4s var(--ease-standard) infinite;
+  }
+
+  @keyframes status-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .profile-visual__status :global(svg) {
+      animation: none;
+    }
+  }
+</style>

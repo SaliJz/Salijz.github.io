@@ -1,0 +1,260 @@
+---
+/**
+ * Hero.astro
+ * Página principal / Hero — primera sección real del portafolio.
+ * Dos columnas en escritorio: izquierda (foto + presentación + CTAs),
+ * derecha (NetworkVisual). En móvil se apilan, visual debajo del texto.
+ *
+ * Contenido placeholder profesional (texto final pendiente): se marca
+ * explícitamente para facilitar su reemplazo cuando exista el copy real.
+ */
+import Button from '@/components/ui/Button.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tag from '@/components/ui/Tag.astro';
+import ProfileVisual from './ProfileVisual.astro';
+import NetworkVisual from './NetworkVisual.astro';
+import { ArrowRight, Download, Mail, Target } from '@lucide/astro';
+import { getCvHref } from '@/lib/cvDownload';
+
+const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Automation', 'Herramientas'];
+---
+
+<section id="home" class="hero">
+  <div class="hero__grid">
+    <!-- ================= COLUMNA IZQUIERDA ================= -->
+    <div class="hero__content">
+      <div class="hero__identity">
+        <ProfileVisual />
+
+        <div class="hero__heading">
+          <Badge variant="accent">Game Dev · Technical Design · QA</Badge>
+          <h1 class="hero__name">Nombre Apellido</h1>
+          <p class="hero__role">Game Developer · Technical Designer · QA Engineer</p>
+        </div>
+      </div>
+
+      <p class="hero__intro">
+        Diseño y construyo sistemas de juego con la misma atención con la que los pongo a prueba:
+        de la mecánica al pipeline, y del pipeline a la calidad. Placeholder de presentación —
+        se reemplazará por el texto definitivo.
+      </p>
+
+      <ul class="hero__tags" aria-label="Áreas de especialización">
+        {
+          specializations.map((s) => (
+            <li>
+              <Tag>{s}</Tag>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="hero__aspiration">
+        <Target size={14} stroke-width={2} aria-hidden="true" />
+        Explorando el diseño de sistemas de combate y herramientas para equipos de desarrollo.
+      </p>
+
+      <div class="hero__ctas">
+        <Button variant="primary" href="#projects">
+          Ver proyectos
+          <ArrowRight slot="icon-right" size={16} stroke-width={2} />
+        </Button>
+
+        <span data-cv-download>
+          <Button variant="secondary" href={getCvHref('es')} ariaLabel="Descargar currículum en PDF">
+            Descargar CV
+            <Download slot="icon-right" size={16} stroke-width={2} />
+          </Button>
+        </span>
+
+        <Button variant="ghost" href="#contact">
+          <Mail slot="icon-left" size={16} stroke-width={2} />
+          Contacto
+        </Button>
+      </div>
+    </div>
+
+    <!-- ================= COLUMNA DERECHA ================= -->
+    <div class="hero__visual">
+      <NetworkVisual />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: var(--space-section-y);
+    overflow: hidden;
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: var(--space-16);
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-6);
+    max-width: 38rem;
+  }
+
+  .hero__identity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .hero__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .hero__name {
+    font-size: var(--text-display);
+    line-height: var(--leading-tight);
+  }
+
+  .hero__role {
+    font-family: var(--font-tech);
+    font-size: var(--text-md);
+    color: var(--color-text-secondary);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .hero__intro {
+    font-size: var(--text-md);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 34rem;
+  }
+
+  .hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .hero__aspiration {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .hero__aspiration :global(svg) {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+
+  .hero__visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24rem;
+  }
+
+  /* -------------------- responsive -------------------- */
+
+  @media (max-width: 1100px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+
+    .hero__content {
+      max-width: none;
+    }
+
+    .hero__visual {
+      order: -1;
+      min-height: 18rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding-block: var(--space-10);
+    }
+
+    .hero__identity {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
+    .hero__name {
+      font-size: var(--text-3xl);
+    }
+
+    .hero__ctas {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .hero__ctas :global(.btn) {
+      width: 100%;
+    }
+
+    .hero__visual {
+      min-height: 14rem;
+    }
+  }
+</style>
+
+<script>
+  import { getCvHref, getCvFilename } from '@/lib/cvDownload';
+
+  const LANG_KEY = 'portfolio:lang';
+
+  // El componente Button (Design System) no expone un prop `download` —
+  // en vez de ampliarlo sin necesidad real, se fija el atributo aquí
+  // directamente sobre el <a> ya renderizado, igual que el resto de la
+  // sincronización de idioma del CV.
+  function applyCvAttributes(lang: string) {
+    const wrapper = document.querySelector<HTMLElement>('[data-cv-download]');
+    const link = wrapper?.querySelector<HTMLAnchorElement>('a');
+    if (!link) return;
+    link.href = getCvHref(lang);
+    link.setAttribute('download', getCvFilename(lang));
+  }
+
+  function initAll() {
+    let lang = 'es';
+    try {
+      lang = sessionStorage.getItem(LANG_KEY) ?? 'es';
+    } catch {
+      /* sessionStorage no disponible — se mantiene el CV en español por defecto */
+    }
+    applyCvAttributes(lang);
+
+    // Preparado para el i18n real: cuando exista, este mismo listener
+    // actualizará el enlace sin más cambios (ver Etapa 3, LanguageSwitcher).
+    document.addEventListener('portfolio:language-change', ((e: CustomEvent<{ lang: string }>) => {
+      applyCvAttributes(e.detail.lang);
+    }) as EventListener);
+  }
+
+  document.addEventListener('astro:page-load', initAll);
+</script>

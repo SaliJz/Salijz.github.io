@@ -1,0 +1,306 @@
+---
+/**
+ * NetworkVisual.astro
+ * Elemento visual interactivo original de la columna derecha del Hero.
+ * Red de nodos/conexiones construida enteramente en SVG + CSS, con un
+ * pointer-parallax ligero en JavaScript vanilla (sin librerías gráficas).
+ *
+ * Referencias indirectas de la dirección artística que codifica esta pieza:
+ *  - Redes / nodos / conexiones → la propia composición.
+ *  - Videojuegos / HUD → nodo "hub" central tipo reticle, líneas tipo
+ *    circuito, animación de "flujo" en las conexiones.
+ *  - Anime/manga (dinamismo, diagonales) → el grafo se apoya en
+ *    conexiones diagonales, no en una grilla ortogonal.
+ *  - Barcelona → un único trazo con un tinte rojo carmín muy sutil
+ *    (opacidad ~25%), el único lugar del Hero donde aparece ese color.
+ *
+ * Los nodos/aristas son una composición fija y curada (no aleatoria) para
+ * mantener un resultado visual controlado y reproducible.
+ */
+interface Node {
+  id: string;
+  x: number;
+  y: number;
+  r: number;
+  variant: 'hub' | 'primary' | 'secondary' | 'tertiary';
+}
+
+interface Edge {
+  from: string;
+  to: string;
+  accent?: 'gold' | 'red';
+}
+
+const nodes: Node[] = [
+  { id: 'hub', x: 300, y: 300, r: 15, variant: 'hub' },
+  { id: 'n1', x: 150, y: 140, r: 7, variant: 'primary' },
+  { id: 'n2', x: 420, y: 110, r: 5, variant: 'secondary' },
+  { id: 'n3', x: 500, y: 240, r: 8, variant: 'primary' },
+  { id: 'n4', x: 480, y: 420, r: 5, variant: 'secondary' },
+  { id: 'n5', x: 360, y: 520, r: 7, variant: 'primary' },
+  { id: 'n6', x: 180, y: 500, r: 5, variant: 'secondary' },
+  { id: 'n7', x: 80, y: 380, r: 7, variant: 'primary' },
+  { id: 'n8', x: 100, y: 210, r: 5, variant: 'secondary' },
+  { id: 'n9', x: 260, y: 160, r: 4, variant: 'tertiary' },
+  { id: 'n10', x: 430, y: 300, r: 4, variant: 'tertiary' },
+  { id: 'n11', x: 300, y: 430, r: 4, variant: 'tertiary' },
+  { id: 'n12', x: 190, y: 330, r: 4, variant: 'tertiary' },
+];
+
+const edges: Edge[] = [
+  { from: 'hub', to: 'n1', accent: 'gold' },
+  { from: 'hub', to: 'n3', accent: 'gold' },
+  { from: 'hub', to: 'n5' },
+  { from: 'hub', to: 'n7' },
+  { from: 'hub', to: 'n9' },
+  { from: 'hub', to: 'n10' },
+  { from: 'hub', to: 'n11' },
+  { from: 'hub', to: 'n12' },
+  { from: 'n1', to: 'n8' },
+  { from: 'n1', to: 'n2' },
+  { from: 'n3', to: 'n2' },
+  { from: 'n3', to: 'n4' },
+  { from: 'n4', to: 'n5' },
+  { from: 'n5', to: 'n6', accent: 'red' },
+  { from: 'n6', to: 'n7' },
+  { from: 'n7', to: 'n8' },
+  { from: 'n9', to: 'n2' },
+  { from: 'n10', to: 'n4' },
+  { from: 'n11', to: 'n6' },
+  { from: 'n12', to: 'n8' },
+];
+
+const byId = (id: string) => nodes.find((n) => n.id === id)!;
+---
+
+<div class="network-visual" data-network-visual aria-hidden="true">
+  <svg viewBox="0 0 600 600" class="network-visual__svg" data-network-svg>
+    <g class="network-visual__group" data-network-group>
+      {
+        edges.map((edge, i) => {
+          const from = byId(edge.from);
+          const to = byId(edge.to);
+          return (
+            <line
+              x1={from.x}
+              y1={from.y}
+              x2={to.x}
+              y2={to.y}
+              class={`network-visual__edge ${edge.accent ? `network-visual__edge--${edge.accent}` : ''}`}
+              style={`animation-delay: ${(i % 6) * 0.4}s;`}
+            />
+          );
+        })
+      }
+
+      {
+        nodes.map((node, i) => (
+          <circle
+            cx={node.x}
+            cy={node.y}
+            r={node.r}
+            class={`network-visual__node network-visual__node--${node.variant}`}
+            style={`animation-delay: ${(i % 5) * 0.5}s;`}
+          />
+        ))
+      }
+    </g>
+  </svg>
+</div>
+
+<style>
+  .network-visual {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 22rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .network-visual__svg {
+    width: 100%;
+    height: 100%;
+    max-width: 34rem;
+    overflow: visible;
+  }
+
+  .network-visual__group {
+    opacity: 0;
+    transform: scale(0.96);
+    transform-origin: center;
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+    will-change: transform;
+  }
+
+  .network-visual[data-visible='true'] .network-visual__group {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .network-visual__edge {
+    stroke: var(--raw-blue-400);
+    stroke-width: 1;
+    opacity: 0.35;
+    stroke-dasharray: 6 10;
+    animation: flow 5s linear infinite;
+  }
+
+  .network-visual__edge--gold {
+    stroke: var(--color-accent);
+    opacity: 0.5;
+  }
+
+  .network-visual__edge--red {
+    stroke: var(--raw-red-500);
+    opacity: 0.25;
+  }
+
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -160;
+    }
+  }
+
+  .network-visual__node {
+    fill: var(--raw-blue-800);
+    stroke: var(--raw-blue-300);
+    stroke-width: 1.5;
+    animation: node-breathe 4.5s var(--ease-standard) infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .network-visual__node--hub {
+    fill: var(--color-bg-surface);
+    stroke: var(--color-accent);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgb(240 193 75 / 35%));
+  }
+
+  .network-visual__node--primary {
+    stroke: var(--color-accent-strong);
+  }
+
+  .network-visual__node--secondary {
+    stroke: var(--color-secondary-cyan);
+  }
+
+  .network-visual__node--tertiary {
+    fill: var(--raw-blue-700);
+    stroke: var(--raw-blue-400);
+    stroke-width: 1;
+  }
+
+  @keyframes node-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.12);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .network-visual {
+      min-height: 16rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .network-visual__group {
+      transition: opacity var(--duration-base) linear;
+    }
+
+    .network-visual__edge,
+    .network-visual__node {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function initNetworkVisual(root: HTMLElement) {
+    const group = root.querySelector<SVGGElement>('[data-network-group]');
+    if (!group) return;
+
+    // Entrada discreta al aparecer en pantalla.
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              root.dataset.visible = 'true';
+              io.disconnect();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      io.observe(root);
+    } else {
+      root.dataset.visible = 'true';
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    if (reduceMotion || isCoarsePointer) return;
+
+    // Pointer-parallax muy sutil: el grupo completo se desplaza un máximo
+    // de ~10px siguiendo al cursor, con suavizado (lerp) para que se sienta
+    // como "profundidad", no como seguimiento directo del mouse.
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    const maxOffset = 10;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      const rect = root.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width - 0.5;
+      const relY = (e.clientY - rect.top) / rect.height - 0.5;
+      targetX = relX * maxOffset * 2;
+      targetY = relY * maxOffset * 2;
+    };
+
+    const handlePointerLeave = () => {
+      targetX = 0;
+      targetY = 0;
+    };
+
+    root.addEventListener('pointermove', handlePointerMove);
+    root.addEventListener('pointerleave', handlePointerLeave);
+
+    let rafId: number;
+    const tick = () => {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      group.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    // Limpieza si el nodo se desmonta (navegación con ClientRouter).
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        cancelAnimationFrame(rafId);
+        root.removeEventListener('pointermove', handlePointerMove);
+        root.removeEventListener('pointerleave', handlePointerLeave);
+      },
+      { once: true }
+    );
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-network-visual]').forEach(initNetworkVisual);
+  }
+
+  document.addEventListener('astro:page-load', initAll);
+</script>

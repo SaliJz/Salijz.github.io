@@ -15,6 +15,7 @@ import Button from '@/components/ui/Button.astro';
 import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Tag from '@/components/ui/Tag.astro';
+import Hero from '@/components/home/Hero.astro';
 import { ExternalLink, Download, ArrowRight, Mail, Loader } from '@lucide/astro';
 
 const placeholderSections: { id: string; label: string; stage: string }[] = [
@@ -50,28 +51,12 @@ const typeSpecimens: { token: string; label: string; family: string }[] = [
 const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
 ---
 
-<BaseLayout title="Portafolio — en construcción" description="Entorno temporal de validación del Layout Global y el Design System.">
+<BaseLayout title="Portafolio — en construcción" description="Hero del portafolio en desarrollo — entorno temporal de validación del Layout Global y el Design System.">
   <a href="#main" class="skip-link">Saltar al contenido</a>
 
   <main id="main">
-    <!-- ================= PLACEHOLDER: HOME / HERO ================= -->
-    <section id="home" class="placeholder-section placeholder-section--hero">
-      <Badge variant="accent">Layout Global · Etapa 3</Badge>
-      <h1>Portafolio en construcción</h1>
-      <p class="guide__lead">
-        Esta sección ocupa el lugar del futuro Hero. Por ahora solo sirve para probar el Header
-        (normal / contraído / móvil), el selector de idioma y el scroll bajo el header sticky.
-        Desplázate para ver el resto de anclas de navegación y, más abajo, el Style Guide del
-        Design System.
-      </p>
-      <div class="demo-row">
-        <Button variant="primary" href="#projects">
-          Ir a "Proyectos"
-          <ArrowRight slot="icon-right" size={16} />
-        </Button>
-        <Button variant="secondary" href="#style-guide">Ver Style Guide</Button>
-      </div>
-    </section>
+    <!-- ================= HERO (Etapa 4) ================= -->
+    <Hero />
 
     <!-- ================= PLACEHOLDERS: resto de anclas del nav ================= -->
     {
@@ -91,7 +76,7 @@ const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
     <div id="style-guide" class="guide">
       <header class="guide__intro">
         <Badge variant="accent">Design System · Etapa 2</Badge>
-        <h1>Style Guide</h1>
+        <h2>Style Guide</h2>
         <p>
           Herramienta temporal para validar la paleta, tipografía y componentes base antes de
           construir las secciones reales del portafolio. Esta página no representa el diseño
@@ -303,14 +288,6 @@ const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
     border-bottom: var(--border-width-thin) dashed var(--color-border-subtle);
   }
 
-  .placeholder-section--hero {
-    min-height: calc(100svh - var(--header-height));
-  }
-
-  .placeholder-section h1 {
-    font-size: var(--text-display);
-  }
-
   .placeholder-section h2 {
     font-size: var(--text-3xl);
   }
@@ -337,7 +314,7 @@ const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
     border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
   }
 
-  .guide__intro h1 {
+  .guide__intro h2 {
     font-size: var(--text-display);
   }
 
