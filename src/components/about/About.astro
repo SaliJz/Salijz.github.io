@@ -1,0 +1,114 @@
+---
+/**
+ * About.astro ("Sobre mí")
+ * Complementa al Hero: el Hero resume "quién soy" en segundos; esta
+ * sección da contexto (perfil, intereses profesionales, evolución) y aloja
+ * el Timeline de trayectoria. Contenido de introducción marcado como
+ * placeholder — ver informe de la Etapa 5 para lo que hace falta confirmar.
+ */
+import Badge from '@/components/ui/Badge.astro';
+import Timeline from './Timeline.astro';
+
+const interests = [
+  'Diseño de sistemas de juego',
+  'Programación gameplay',
+  'Calidad y testing (QA)',
+  'Resolución de problemas técnicos',
+];
+---
+
+<section id="about" class="about">
+  <div class="about__container">
+    <header class="about__header">
+      <Badge variant="neutral">Sobre mí</Badge>
+      <h2 class="about__title">Perfil y trayectoria</h2>
+    </header>
+
+    <div class="about__intro">
+      <p>
+        Placeholder de presentación — texto pendiente de validar. Trabajo en la intersección entre
+        desarrollo de videojuegos, diseño técnico y aseguramiento de calidad: me interesa tanto
+        construir sistemas de juego como asegurarme de que funcionen como deberían antes de
+        llegar a manos del jugador.
+      </p>
+      <p>
+        Placeholder — evolución profesional y académica pendiente de completar con datos reales.
+        El recorrido concreto (formación, experiencia y proyectos) se detalla en la línea de
+        tiempo a continuación.
+      </p>
+
+      <ul class="about__interests" aria-label="Intereses profesionales">
+        {interests.map((interest) => <li>{interest}</li>)}
+      </ul>
+    </div>
+
+    <Timeline />
+  </div>
+</section>
+
+<style>
+  .about {
+    padding-block: var(--space-section-y);
+    scroll-margin-top: var(--header-height);
+  }
+
+  .about__container {
+    max-width: 64rem;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .about__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  .about__title {
+    font-size: var(--text-3xl);
+  }
+
+  .about__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 52rem;
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-12);
+  }
+
+  .about__interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin-top: var(--space-2);
+    font-family: var(--font-tech);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+  }
+
+  .about__interests li {
+    position: relative;
+    padding-left: var(--space-4);
+  }
+
+  .about__interests li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-accent);
+  }
+
+  @media (max-width: 640px) {
+    .about {
+      padding-block: var(--space-10);
+    }
+  }
+</style>

@@ -16,14 +16,14 @@ import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Tag from '@/components/ui/Tag.astro';
 import Hero from '@/components/home/Hero.astro';
+import About from '@/components/about/About.astro';
 import { ExternalLink, Download, ArrowRight, Mail, Loader } from '@lucide/astro';
 
 const placeholderSections: { id: string; label: string; stage: string }[] = [
-  { id: 'about', label: 'Sobre mí', stage: 'Etapa 5' },
-  { id: 'projects', label: 'Proyectos', stage: 'Etapa 5' },
-  { id: 'skills', label: 'Habilidades', stage: 'Etapa 5' },
-  { id: 'certificates', label: 'Certificados', stage: 'Etapa 5' },
-  { id: 'contact', label: 'Contacto', stage: 'Etapa 5' },
+  { id: 'projects', label: 'Proyectos', stage: 'una próxima etapa' },
+  { id: 'skills', label: 'Habilidades', stage: 'una próxima etapa' },
+  { id: 'certificates', label: 'Certificados', stage: 'una próxima etapa' },
+  { id: 'contact', label: 'Contacto', stage: 'una próxima etapa' },
 ];
 
 const palette: { label: string; token: string; note?: string }[] = [
@@ -57,6 +57,9 @@ const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
   <main id="main">
     <!-- ================= HERO (Etapa 4) ================= -->
     <Hero />
+
+    <!-- ================= SOBRE MÍ (Etapa 5) ================= -->
+    <About />
 
     <!-- ================= PLACEHOLDERS: resto de anclas del nav ================= -->
     {
@@ -286,6 +289,9 @@ const spacingScale = ['1', '2', '3', '4', '6', '8', '12', '16', '24'];
     margin-inline: auto;
     padding: var(--space-16) var(--space-6);
     border-bottom: var(--border-width-thin) dashed var(--color-border-subtle);
+    /* Corrección responsive: refuerzo explícito del offset del header
+       sticky para navegación por ancla (ver Hero.astro/About.astro). */
+    scroll-margin-top: var(--header-height);
   }
 
   .placeholder-section h2 {

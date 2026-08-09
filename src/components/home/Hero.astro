@@ -86,6 +86,11 @@ const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Au
     position: relative;
     padding-block: var(--space-section-y);
     overflow: hidden;
+    /* Refuerzo explícito del offset del header sticky para navegación por
+       ancla (además de scroll-padding-top en html, Etapa 3) — ver
+       corrección responsive: algunos navegadores resuelven mejor
+       scroll-margin-top por elemento que scroll-padding-top en la raíz. */
+    scroll-margin-top: var(--header-height);
   }
 
   .hero__grid {
@@ -179,22 +184,35 @@ const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Au
   @media (max-width: 1100px) {
     .hero__grid {
       grid-template-columns: 1fr;
-      gap: var(--space-12);
+      gap: var(--space-10);
     }
 
     .hero__content {
       max-width: none;
     }
 
+    /* La visualización decorativa va DESPUÉS del contenido principal en
+       layouts de una sola columna (tablet y móvil) — antes tenía
+       `order: -1`, que la adelantaba visualmente por delante de la
+       presentación y generaba demasiado espacio antes del contenido
+       relevante para un reclutador. El orden natural del DOM (contenido
+       primero) ya resuelve esto sin necesidad de reordenar. */
     .hero__visual {
-      order: -1;
-      min-height: 18rem;
+      min-height: 16rem;
     }
   }
 
   @media (max-width: 640px) {
     .hero {
-      padding-block: var(--space-10);
+      padding-block: var(--space-8);
+    }
+
+    .hero__grid {
+      gap: var(--space-8);
+    }
+
+    .hero__content {
+      gap: var(--space-4);
     }
 
     .hero__identity {
@@ -217,8 +235,22 @@ const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Au
       width: 100%;
     }
 
+    /* Visualización reducida y con menos protagonismo en móvil: la
+       prioridad es leer "quién soy" sin desplazarse de más. */
     .hero__visual {
-      min-height: 14rem;
+      min-height: 10rem;
+    }
+
+    /* Avatar más compacto en móvil (ver ProfileVisual.astro para el
+       tamaño equivalente del marco e icono placeholder). */
+    :global(.profile-visual__frame) {
+      width: 6rem;
+      height: 6rem;
+    }
+
+    :global(.profile-visual__placeholder svg) {
+      width: 2.5rem;
+      height: 2.5rem;
     }
   }
 </style>

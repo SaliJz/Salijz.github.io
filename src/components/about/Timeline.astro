@@ -1,0 +1,102 @@
+---
+/**
+ * Timeline.astro
+ * Renderiza los hitos de `src/data/timeline.ts` sobre una línea vertical
+ * ("spine"). El tramo entre el primer hito y el marcado como `current` se
+ * resalta en dorado (sensación de "ruta recorrida hasta ahora", sin caer
+ * en un menú de videojuego literal). El resto de la línea queda en un tono
+ * neutro. Alterna tarjetas izquierda/derecha en escritorio; en tablet/
+ * móvil se convierte en una única columna con la línea a la izquierda.
+ */
+import TimelineItem from './TimelineItem.astro';
+import { timelineEntries } from '@/data/timeline';
+
+const currentIndex = timelineEntries.findIndex((e) => e.current);
+const progressRatio =
+  timelineEntries.length <= 1
+    ? 1
+    : (currentIndex === -1 ? timelineEntries.length - 1 : currentIndex) / (timelineEntries.length - 1);
+---
+
+<div class="timeline" data-timeline>
+  <div class="timeline__spine" aria-hidden="true">
+    <div class="timeline__spine-fill" style={`--progress: ${progressRatio};`}></div>
+  </div>
+
+  <ol class="timeline__list">
+    {
+      timelineEntries.map((entry, i) => (
+        <TimelineItem entry={entry} side={i % 2 === 0 ? 'left' : 'right'} index={i} />
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+  }
+
+  .timeline__spine {
+    position: absolute;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    /* Centrado con el nodo de 2.25rem del layout de una sola columna (ver
+       corrección responsive en TimelineItem.astro). En escritorio se
+       restaura el centrado original más abajo. */
+    left: 1.125rem;
+    width: 2px;
+    background-color: var(--color-border-default);
+  }
+
+  .timeline__spine-fill {
+    width: 100%;
+    height: calc(var(--progress) * 100%);
+    background: linear-gradient(to bottom, var(--color-accent), var(--color-accent-strong));
+  }
+
+  .timeline__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  @media (min-width: 1001px) {
+    .timeline__spine {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+</style>
+
+<script>
+  function initTimeline(root: HTMLElement) {
+    const items = root.querySelectorAll<HTMLElement>('[data-timeline-item]');
+    if (items.length === 0) return;
+
+    if (!('IntersectionObserver' in window)) {
+      items.forEach((item) => (item.dataset.visible = 'true'));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).dataset.visible = 'true';
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+    );
+
+    items.forEach((item) => io.observe(item));
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-timeline]').forEach(initTimeline);
+  }
+
+  document.addEventListener('astro:page-load', initAll);
+</script>

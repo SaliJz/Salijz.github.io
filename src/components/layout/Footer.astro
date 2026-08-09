@@ -161,10 +161,22 @@ const placeholder = {
       text-align: center;
     }
 
+    /* Corrección responsive: los grupos usaban white-space: nowrap sin
+       posibilidad de envolver, lo que forzaba un ancho mínimo mayor que
+       el viewport en pantallas angostas y producía scroll horizontal.
+       Se permite el wrap y se centra cada grupo cuando ocupa su propia
+       fila. */
+    .status-bar__group {
+      white-space: normal;
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: var(--space-1);
+      min-width: 0;
+    }
+
     .status-bar__group--center {
       order: 3;
       width: 100%;
-      justify-content: center;
     }
   }
 

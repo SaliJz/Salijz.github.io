@@ -1,0 +1,242 @@
+---
+/**
+ * TimelineItem.astro
+ * Un hito del Timeline: nodo sobre la línea vertical + tarjeta de
+ * contenido. Toda la información es visible sin depender de hover — el
+ * hover/focus solo resalta (nodo dorado + tarjeta elevada), no revela
+ * contenido oculto.
+ */
+import { GraduationCap, Briefcase, Folder, Flag } from '@lucide/astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tag from '@/components/ui/Tag.astro';
+import type { TimelineEntry } from '@/data/timeline';
+import { timelineCategoryLabels } from '@/data/timeline';
+
+interface Props {
+  entry: TimelineEntry;
+  side: 'left' | 'right';
+  index: number;
+}
+
+const { entry, side, index } = Astro.props;
+
+const categoryIcons = {
+  education: GraduationCap,
+  experience: Briefcase,
+  project: Folder,
+  milestone: Flag,
+} as const;
+
+const statusLabels: Record<NonNullable<TimelineEntry['status']>, string> = {
+  completed: 'Completado',
+  'in-progress': 'En curso',
+  upcoming: 'Próximo',
+};
+
+const statusVariants: Record<NonNullable<TimelineEntry['status']>, 'success' | 'accent' | 'info'> = {
+  completed: 'success',
+  'in-progress': 'accent',
+  upcoming: 'info',
+};
+
+const Icon = categoryIcons[entry.category];
+---
+
+<li
+  class={`timeline-item timeline-item--${side}`}
+  data-timeline-item
+  style={`--stagger: ${index};`}
+>
+  <div class="timeline-item__node-col" aria-hidden="true">
+    <span class={`timeline-item__node ${entry.current ? 'timeline-item__node--current' : ''}`}>
+      <Icon size={16} stroke-width={2} />
+    </span>
+  </div>
+
+  <div class="timeline-item__card-col">
+    <Card as="article" class="timeline-item__card">
+      <div class="timeline-item__meta">
+        <span class="timeline-item__period">{entry.period}</span>
+        {entry.current && <Badge variant="accent">Actual</Badge>}
+        {entry.status && !entry.current && (
+          <Badge variant={statusVariants[entry.status]}>{statusLabels[entry.status]}</Badge>
+        )}
+      </div>
+
+      <h3 class="timeline-item__title">{entry.title}</h3>
+      <p class="timeline-item__context">{entry.context}</p>
+      <p class="timeline-item__description">{entry.description}</p>
+
+      <div class="timeline-item__footer">
+        <Tag>{timelineCategoryLabels[entry.category]}</Tag>
+        {entry.isPlaceholder && <Tag>Contenido pendiente de confirmar</Tag>}
+      </div>
+    </Card>
+  </div>
+</li>
+
+<style>
+  .timeline-item {
+    position: relative;
+    display: grid;
+    /* Corrección responsive: se reduce el ancho reservado para la columna
+       del nodo y el espacio entre nodo/tarjeta en el layout de una sola
+       columna (mobile/tablet, ≤1000px) para dar más ancho útil a las
+       tarjetas. En escritorio (≥1001px) se restauran los valores
+       originales — ver el bloque @media (min-width: 1001px) más abajo. */
+    grid-template-columns: 2.25rem 1fr;
+    gap: var(--space-4);
+    align-items: start;
+
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+    transition-delay: calc(var(--stagger) * 90ms);
+  }
+
+  .timeline-item[data-visible='true'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .timeline-item__node-col {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .timeline-item__node {
+    position: relative;
+    z-index: var(--z-surface-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg-surface);
+    border: var(--border-width-medium) solid var(--color-border-strong);
+    color: var(--color-text-secondary);
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard),
+      box-shadow var(--duration-fast) var(--ease-standard);
+  }
+
+  .timeline-item__node--current {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    box-shadow: var(--shadow-accent-glow);
+  }
+
+  .timeline-item:hover .timeline-item__node,
+  .timeline-item:focus-within .timeline-item__node {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .timeline-item__card {
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-standard);
+  }
+
+  .timeline-item:hover .timeline-item__card,
+  .timeline-item:focus-within .timeline-item__card {
+    border-color: var(--color-border-accent);
+    transform: translateY(-2px);
+  }
+
+  .timeline-item__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .timeline-item__period {
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .timeline-item__title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-1);
+  }
+
+  .timeline-item__context {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-3);
+  }
+
+  .timeline-item__description {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-4);
+  }
+
+  .timeline-item__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  /* -------------------- escritorio: alternancia izquierda/derecha -------------------- */
+
+  @media (min-width: 1001px) {
+    .timeline-item {
+      grid-template-columns: 1fr 3rem 1fr;
+      gap: var(--space-6);
+    }
+
+    .timeline-item__node {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    .timeline-item__node-col {
+      grid-column: 2;
+    }
+
+    .timeline-item--left .timeline-item__card-col {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .timeline-item--right .timeline-item__card-col {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .timeline-item--left .timeline-item__card-col {
+      text-align: right;
+    }
+
+    .timeline-item--left .timeline-item__meta,
+    .timeline-item--left .timeline-item__footer {
+      justify-content: flex-end;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-item {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .timeline-item:hover .timeline-item__card,
+    .timeline-item:focus-within .timeline-item__card {
+      transform: none;
+    }
+  }
+</style>

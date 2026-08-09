@@ -213,6 +213,19 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
     }
   }
 
+  /* Corrección responsive: en móvil estrecho la visualización se reduce
+     más, para no retrasar el contenido principal del Hero con un bloque
+     decorativo demasiado alto antes de la presentación. */
+  @media (max-width: 640px) {
+    .network-visual {
+      min-height: 10rem;
+    }
+
+    .network-visual__svg {
+      max-width: 20rem;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .network-visual__group {
       transition: opacity var(--duration-base) linear;
