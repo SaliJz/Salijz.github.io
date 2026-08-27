@@ -1,0 +1,44 @@
+---
+import Card from '@/components/ui/Card.astro';
+import Tag from '@/components/ui/Tag.astro';
+import type { SoftSkill } from '@/data/skills';
+import es from '@/i18n/es';
+
+interface Props {
+  skill: SoftSkill;
+}
+
+const { skill } = Astro.props;
+const copy = es.skills.softSkills[skill.id];
+---
+
+<Card as="li" class="soft-skill" data-soft-skill-id={skill.id}>
+  <h4 class="soft-skill__name" data-soft-skill-name>{copy?.name ?? skill.id}</h4>
+  <p class="soft-skill__description" data-soft-skill-description>{copy?.description ?? ''}</p>
+  {skill.isPlaceholder && (
+    <div class="soft-skill__tag" data-skill-placeholder>
+      <Tag>{es.skills.placeholderTag}</Tag>
+    </div>
+  )}
+</Card>
+
+<style>
+  .soft-skill {
+    height: 100%;
+  }
+
+  .soft-skill__name {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-md);
+  }
+
+  .soft-skill__description {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+  }
+
+  .soft-skill__tag {
+    margin-top: var(--space-4);
+  }
+</style>

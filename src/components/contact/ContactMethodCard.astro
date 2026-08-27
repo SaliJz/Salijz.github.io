@@ -1,0 +1,123 @@
+---
+import Card from '@/components/ui/Card.astro';
+import Tag from '@/components/ui/Tag.astro';
+import BrandIcon from '@/components/ui/BrandIcon.astro';
+import { Mail, Copy, ExternalLink } from '@lucide/astro';
+import type { ContactMethod } from '@/data/contact';
+import es from '@/i18n/es';
+
+interface Props { method: ContactMethod; }
+const { method } = Astro.props;
+const copy = es.contact.methods[method.id];
+const brandName = method.kind === 'email' ? null : method.kind;
+const hasAction = Boolean(method.url);
+---
+
+<Card as="li" class="contact-method" interactive={hasAction} data-contact-method-id={method.id} data-contact-kind={method.kind}>
+  <div class="contact-method__top">
+    <span class="contact-method__icon" aria-hidden="true">
+      {brandName ? <BrandIcon name={brandName} size={20} /> : <Mail size={20} />}
+    </span>
+    {!hasAction && <span data-contact-pending><Tag>{es.contact.pendingTag}</Tag></span>}
+  </div>
+
+  <h3 class="contact-method__label" data-contact-label>{copy?.label ?? method.kind}</h3>
+  <p class="contact-method__description" data-contact-description>{copy?.description ?? ''}</p>
+
+  {method.value && <p class="contact-method__value" data-contact-value>{method.value}</p>}
+
+  <div class="contact-method__actions">
+    {method.url && (
+      <a
+        class="contact-method__link"
+        href={method.url}
+        target={method.openInNewTab ? '_blank' : undefined}
+        rel={method.openInNewTab ? 'noopener noreferrer' : undefined}
+        aria-label={copy?.accessibleLabel}
+        data-contact-link
+      >
+        <span data-contact-action-label>{copy?.label}</span>
+        <ExternalLink size={14} aria-hidden="true" />
+      </a>
+    )}
+
+    {method.canCopy && method.value && (
+      <button
+        type="button"
+        class="contact-method__copy"
+        data-copy-contact
+        data-copy-value={method.value}
+        aria-label={es.contact.copyAria(copy?.label ?? method.kind)}
+      >
+        <Copy size={14} aria-hidden="true" />
+        <span data-copy-label>{es.contact.copyLabel}</span>
+      </button>
+    )}
+  </div>
+</Card>
+
+<style>
+  .contact-method {
+    height: 100%;
+  }
+
+  .contact-method__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+
+  .contact-method__icon {
+    display: inline-flex;
+    color: var(--color-accent);
+  }
+
+  .contact-method__label {
+    font-size: var(--text-lg);
+  }
+
+  .contact-method__description {
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+  }
+
+  .contact-method__value {
+    margin-top: var(--space-3);
+    overflow-wrap: anywhere;
+    font-family: var(--font-tech);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+  }
+
+  .contact-method__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .contact-method__link,
+  .contact-method__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.5rem;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: var(--border-width-thin) solid var(--color-border-default);
+    color: var(--color-text-secondary);
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .contact-method__link:hover,
+  .contact-method__copy:hover {
+    color: var(--color-accent);
+    border-color: var(--color-border-accent);
+  }
+</style>

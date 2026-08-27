@@ -1,0 +1,62 @@
+---
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Button from '@/components/ui/Button.astro';
+import { ExternalLink } from '@lucide/astro';
+import type { Certificate } from '@/data/certificates';
+import es from '@/i18n/es';
+
+interface Props { certificate: Certificate; }
+const { certificate } = Astro.props;
+const variants = { active: 'success', expired: 'neutral', 'in-progress': 'accent' } as const;
+---
+
+<Card as="li" class="certificate-card" interactive={Boolean(certificate.verificationUrl)} data-certificate-id={certificate.id} data-certificate-status={certificate.status}>
+  <div class="certificate-card__top">
+    <Badge variant={variants[certificate.status]}><span data-certificate-status-label>{es.certificates.statusLabels[certificate.status]}</span></Badge>
+    <span class="certificate-card__category" data-certificate-category={certificate.category}>{es.certificates.categoryLabels[certificate.category]}</span>
+  </div>
+  <h4 class="certificate-card__name">{certificate.name}</h4>
+  <p class="certificate-card__issuer">{certificate.issuer}</p>
+  {certificate.issued && <p class="certificate-card__meta">{certificate.issued}</p>}
+  {certificate.verificationUrl && (
+    <div class="certificate-card__action">
+      <Button variant="secondary" size="sm" href={certificate.verificationUrl} ariaLabel={es.certificates.verifyAria(certificate.name)}>
+        <span data-certificate-verify-label>{es.certificates.verifyAction}</span>
+        <ExternalLink slot="icon-right" size={14} />
+      </Button>
+    </div>
+  )}
+</Card>
+
+<style>
+  .certificate-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .certificate-card__category,
+  .certificate-card__meta {
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .certificate-card__name {
+    font-size: var(--text-lg);
+  }
+
+  .certificate-card__issuer {
+    margin-top: var(--space-1);
+    color: var(--color-text-secondary);
+  }
+
+  .certificate-card__meta,
+  .certificate-card__action {
+    margin-top: var(--space-4);
+  }
+</style>

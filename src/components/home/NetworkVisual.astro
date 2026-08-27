@@ -240,6 +240,9 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
 
 <script>
   function initNetworkVisual(root: HTMLElement) {
+    if (root.dataset.bound === 'true') return;
+    root.dataset.bound = 'true';
+
     const group = root.querySelector<SVGGElement>('[data-network-group]');
     if (!group) return;
 
@@ -315,5 +318,12 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
     document.querySelectorAll<HTMLElement>('[data-network-visual]').forEach(initNetworkVisual);
   }
 
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll, { once: true });
+  } else {
+    initAll();
+  }
   document.addEventListener('astro:page-load', initAll);
 </script>

@@ -1,0 +1,122 @@
+---
+/**
+ * ProjectFilters.astro
+ * Barra de filtros ligera. Extiende Tag (Design System) en vez de crear un
+ * sistema de "chip" propio — visualmente son Tags con estado `active`,
+ * más `aria-pressed` para el estado accesible.
+ *
+ * Filtra en cliente con JavaScript vanilla (sin recarga): añade/quita una
+ * clase de la lista de tarjetas ya renderizadas en el servidor, no vuelve
+ * a pedir datos. Ver el <script> al final.
+ */
+import { projectFilters } from '@/data/projects';
+---
+
+<div class="project-filters" role="group" aria-label="Filtrar proyectos por plataforma" data-project-filters>
+  {
+    projectFilters.map((filter) => (
+      <button
+        type="button"
+        class="project-filters__tag"
+        data-filter-id={filter.id}
+        aria-pressed={filter.id === 'all' ? 'true' : 'false'}
+      >
+        {filter.label}
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .project-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  /*
+   * Extensión visual de .tag (ui/Tag.astro) para que además funcione como
+   * <button> real (accesible por teclado, con aria-pressed). No se
+   * reutiliza el componente Tag.astro directamente porque este necesita
+   * ser un <button> interactivo, no un <span> — pero comparte
+   * exactamente los mismos tokens/clases visuales para que se lea como
+   * "el mismo Tag del Design System, en su estado interactivo".
+   */
+  .project-filters__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: var(--border-width-thin) solid var(--color-border-subtle);
+    background-color: transparent;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .project-filters__tag:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-border-default);
+  }
+
+  .project-filters__tag[aria-pressed='true'] {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+</style>
+
+<script>
+  function initProjectFilters(root: HTMLElement) {
+    if (root.dataset.bound === 'true') return;
+    root.dataset.bound = 'true';
+
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-filter-id]');
+    const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+    const emptyState = document.querySelector<HTMLElement>('[data-project-empty]');
+    if (!grid) return;
+
+    const cards = grid.querySelectorAll<HTMLElement>('[data-project-card]');
+
+    const applyFilter = (filterId: string) => {
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const platforms = (card.dataset.platforms ?? '').split(',').filter(Boolean);
+        const matches =
+          filterId === 'all' ||
+          (filterId === 'multiplatform' ? platforms.length > 1 : platforms.includes(filterId));
+
+        card.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      if (emptyState) emptyState.hidden = visibleCount > 0;
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+        applyFilter(button.dataset.filterId ?? 'all');
+      });
+    });
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-project-filters]').forEach(initProjectFilters);
+  }
+
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll, { once: true });
+  } else {
+    initAll();
+  }
+  document.addEventListener('astro:page-load', initAll);
+</script>

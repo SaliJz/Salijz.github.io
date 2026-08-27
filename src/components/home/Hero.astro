@@ -14,7 +14,7 @@ import Tag from '@/components/ui/Tag.astro';
 import ProfileVisual from './ProfileVisual.astro';
 import NetworkVisual from './NetworkVisual.astro';
 import { ArrowRight, Download, Mail, Target } from '@lucide/astro';
-import { getCvHref } from '@/lib/cvDownload';
+import { CV_DOWNLOADS_READY, getCvHref } from '@/lib/cvDownload';
 
 const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Automation', 'Herramientas'];
 ---
@@ -60,11 +60,30 @@ const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Au
           <ArrowRight slot="icon-right" size={16} stroke-width={2} />
         </Button>
 
-        <span data-cv-download>
-          <Button variant="secondary" href={getCvHref('es')} ariaLabel="Descargar currículum en PDF">
-            Descargar CV
-            <Download slot="icon-right" size={16} stroke-width={2} />
-          </Button>
+        <span data-cv-download data-cv-ready={String(CV_DOWNLOADS_READY)}>
+          {
+            CV_DOWNLOADS_READY ? (
+              <Button
+                variant="secondary"
+                href={getCvHref('es')}
+                download
+                ariaLabel="Descargar currículum en PDF"
+              >
+                Descargar CV
+                <Download slot="icon-right" size={16} stroke-width={2} />
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                disabled
+                ariaLabel="Currículum pendiente de añadir"
+                title="El PDF del currículum todavía no ha sido añadido"
+              >
+                Descargar CV
+                <Download slot="icon-right" size={16} stroke-width={2} />
+              </Button>
+            )
+          }
         </span>
 
         <Button variant="ghost" href="#contact">
@@ -254,39 +273,3 @@ const specializations = ['Gameplay Programming', 'Diseño de Sistemas', 'QA & Au
     }
   }
 </style>
-
-<script>
-  import { getCvHref, getCvFilename } from '@/lib/cvDownload';
-
-  const LANG_KEY = 'portfolio:lang';
-
-  // El componente Button (Design System) no expone un prop `download` —
-  // en vez de ampliarlo sin necesidad real, se fija el atributo aquí
-  // directamente sobre el <a> ya renderizado, igual que el resto de la
-  // sincronización de idioma del CV.
-  function applyCvAttributes(lang: string) {
-    const wrapper = document.querySelector<HTMLElement>('[data-cv-download]');
-    const link = wrapper?.querySelector<HTMLAnchorElement>('a');
-    if (!link) return;
-    link.href = getCvHref(lang);
-    link.setAttribute('download', getCvFilename(lang));
-  }
-
-  function initAll() {
-    let lang = 'es';
-    try {
-      lang = sessionStorage.getItem(LANG_KEY) ?? 'es';
-    } catch {
-      /* sessionStorage no disponible — se mantiene el CV en español por defecto */
-    }
-    applyCvAttributes(lang);
-
-    // Preparado para el i18n real: cuando exista, este mismo listener
-    // actualizará el enlace sin más cambios (ver Etapa 3, LanguageSwitcher).
-    document.addEventListener('portfolio:language-change', ((e: CustomEvent<{ lang: string }>) => {
-      applyCvAttributes(e.detail.lang);
-    }) as EventListener);
-  }
-
-  document.addEventListener('astro:page-load', initAll);
-</script>

@@ -1,0 +1,45 @@
+---
+import Card from '@/components/ui/Card.astro';
+import Tag from '@/components/ui/Tag.astro';
+import type { TechnicalSkill, TechnicalSkillGroup } from '@/data/skills';
+
+interface Props {
+  group: TechnicalSkillGroup;
+  label: string;
+  skills: TechnicalSkill[];
+}
+
+const { group, label, skills } = Astro.props;
+---
+
+<Card as="article" class="skill-group" data-skill-group={group}>
+  <h4 class="skill-group__title" data-skill-group-label>{label}</h4>
+  <ul class="skill-group__list" aria-label={label} data-skill-group-list>
+    {skills.map((skill) => (
+      <li>
+        <Tag>{skill.name}</Tag>
+      </li>
+    ))}
+  </ul>
+</Card>
+
+<style>
+  .skill-group {
+    height: 100%;
+  }
+
+  .skill-group__title {
+    margin-bottom: var(--space-4);
+    font-family: var(--font-tech);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+
+  .skill-group__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+</style>

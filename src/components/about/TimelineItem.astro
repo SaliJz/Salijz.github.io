@@ -46,6 +46,10 @@ const Icon = categoryIcons[entry.category];
 <li
   class={`timeline-item timeline-item--${side}`}
   data-timeline-item
+  data-entry-id={entry.id}
+  data-entry-category={entry.category}
+  data-entry-status={entry.status}
+  data-entry-current={entry.current ? 'true' : 'false'}
   style={`--stagger: ${index};`}
 >
   <div class="timeline-item__node-col" aria-hidden="true">

@@ -201,7 +201,12 @@ const navItems: NavItem[] = [
   .nav {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    /* Corrección de overflow horizontal: con --space-6 el nav completo
+       (6 enlaces + selector de idioma + colapsar) desbordaba por ~4px
+       exactamente a 1024px de ancho — uno de los anchos de verificación
+       obligatorios de la Etapa 6. Ajuste mínimo e imperceptible a
+       cualquier otro ancho de escritorio. */
+    gap: var(--space-5);
   }
 
   .nav__list {
@@ -371,8 +376,12 @@ const navItems: NavItem[] = [
       justify-content: flex-start;
       gap: 0;
       padding: var(--space-6);
+      padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
       background-color: var(--color-bg-base);
       border-top: var(--border-width-thin) solid var(--color-border-subtle);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
 
       opacity: 0;
       visibility: hidden;
@@ -416,7 +425,12 @@ const navItems: NavItem[] = [
       padding-left: 0;
       border-left: none;
       border-top: var(--border-width-thin) solid var(--color-border-subtle);
-      justify-content: space-between;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+
+    :global(html[data-mobile-nav-open='true']) {
+      overflow: hidden;
     }
   }
 
@@ -430,32 +444,72 @@ const navItems: NavItem[] = [
 
 <script>
   const COLLAPSE_KEY = 'portfolio:header-collapsed';
+  const MOBILE_BREAKPOINT = 900;
 
   function initHeader(header: HTMLElement) {
+    if (header.dataset.bound === 'true') return;
+    header.dataset.bound = 'true';
+
     const mobileToggle = header.querySelector<HTMLButtonElement>('[data-mobile-toggle]');
     const collapseToggle = header.querySelector<HTMLButtonElement>('[data-collapse-toggle]');
+    const nav = header.querySelector<HTMLElement>('[data-nav]');
     const navLinks = header.querySelectorAll<HTMLAnchorElement>('[data-nav-id]');
+    const closeLinks = header.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+
+    const isMobileMenuOpen = () => header.dataset.mobileOpen === 'true';
+
+    const closeMobileMenu = (restoreFocus = false) => {
+      delete header.dataset.mobileOpen;
+      delete document.documentElement.dataset.mobileNavOpen;
+      mobileToggle?.setAttribute('aria-expanded', 'false');
+      if (mobileToggle) {
+        mobileToggle.setAttribute('aria-label', mobileToggle.dataset.labelOpen ?? 'Abrir menú de navegación');
+        if (restoreFocus) mobileToggle.focus();
+      }
+    };
+
+    const openMobileMenu = () => {
+      header.dataset.mobileOpen = 'true';
+      document.documentElement.dataset.mobileNavOpen = 'true';
+      mobileToggle?.setAttribute('aria-expanded', 'true');
+      mobileToggle?.setAttribute('aria-label', mobileToggle.dataset.labelClose ?? 'Cerrar menú de navegación');
+    };
 
     // -- menú móvil --
     mobileToggle?.addEventListener('click', () => {
-      const isOpen = header.dataset.mobileOpen === 'true';
-      header.dataset.mobileOpen = String(!isOpen);
-      mobileToggle.setAttribute('aria-expanded', String(!isOpen));
+      if (isMobileMenuOpen()) closeMobileMenu();
+      else openMobileMenu();
     });
 
-    navLinks.forEach((link) => {
-      link.addEventListener('click', () => {
-        header.dataset.mobileOpen = 'false';
-        mobileToggle?.setAttribute('aria-expanded', 'false');
-      });
+    // Cualquier navegación por ancla debe cerrar el drawer. Se incluyen
+    // tanto los enlaces de sección como la marca P/ Portafolio.
+    closeLinks.forEach((link) => link.addEventListener('click', () => closeMobileMenu()));
+
+    // Defensa adicional por delegación: evita que una futura modificación
+    // del markup deje un enlace del drawer sin el cierre correspondiente.
+    nav?.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a[href^="#"]')) closeMobileMenu();
     });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isMobileMenuOpen()) closeMobileMenu(true);
+    });
+
+    // Al volver a escritorio no debe quedar un drawer/scroll-lock móvil
+    // persistente después de rotar el dispositivo o redimensionar DevTools.
+    const desktopQuery = window.matchMedia(`(min-width: ${MOBILE_BREAKPOINT + 1}px)`);
+    const handleViewportChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      if (event.matches) closeMobileMenu();
+    };
+    desktopQuery.addEventListener?.('change', handleViewportChange);
+    if (desktopQuery.matches) closeMobileMenu();
 
     // -- header contraído (desktop), persistido en sessionStorage --
     // La fuente de verdad visual es html[data-header-collapsed]; ver nota
     // en el <style> y el script inline de BaseLayout (anti-FOUC).
     const syncCollapseControl = (collapsed: boolean) => {
       collapseToggle?.setAttribute('aria-pressed', String(collapsed));
-      collapseToggle?.setAttribute('aria-label', collapsed ? 'Expandir navegación' : 'Contraer navegación');
+      collapseToggle?.setAttribute('aria-label', collapsed ? (collapseToggle.dataset.labelExpand ?? 'Expandir navegación') : (collapseToggle.dataset.labelCollapse ?? 'Contraer navegación'));
     };
 
     syncCollapseControl(document.documentElement.dataset.headerCollapsed === 'true');
@@ -497,5 +551,12 @@ const navItems: NavItem[] = [
     document.querySelectorAll<HTMLElement>('[data-header]').forEach(initHeader);
   }
 
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll, { once: true });
+  } else {
+    initAll();
+  }
   document.addEventListener('astro:page-load', initAll);
 </script>

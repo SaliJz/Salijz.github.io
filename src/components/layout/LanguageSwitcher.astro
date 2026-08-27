@@ -1,32 +1,11 @@
 ---
 /**
  * LanguageSwitcher.astro
- *
- * Componente VISUAL del selector de idioma. En esta etapa no existe
- * sistema de i18n: no hay rutas por idioma ni archivos de traducción.
- * Este componente únicamente:
- *   1. Muestra los 5 idiomas previstos en el brief.
- *   2. Permite seleccionar uno visualmente (para poder probar sus estados).
- *   3. Deja preparada una API mínima para conectarse al i18n real más
- *      adelante: guarda la selección en `sessionStorage` bajo la clave
- *      `portfolio:lang` y emite un CustomEvent `portfolio:language-change`
- *      (con `detail.lang`) en `document` cada vez que cambia. La futura
- *      capa de i18n solo tendrá que escuchar ese evento — no hace falta
- *      tocar este componente para conectarla.
+ * Selector visual conectado al sistema i18n. La preferencia persiste en
+ * localStorage y se comunica mediante un CustomEvent centralizado.
  */
-interface Language {
-  code: 'es' | 'en' | 'fr' | 'pt' | 'zh';
-  label: string;
-  nativeLabel: string;
-}
-
-const languages: Language[] = [
-  { code: 'es', label: 'Español', nativeLabel: 'ES' },
-  { code: 'en', label: 'English', nativeLabel: 'EN' },
-  { code: 'fr', label: 'Français', nativeLabel: 'FR' },
-  { code: 'pt', label: 'Português', nativeLabel: 'PT' },
-  { code: 'zh', label: '中文', nativeLabel: '中文' },
-];
+import { ChevronDown } from '@lucide/astro';
+import { languages } from '@/i18n/languages';
 ---
 
 <div class="lang-switcher" data-lang-switcher>
@@ -35,127 +14,129 @@ const languages: Language[] = [
     class="lang-switcher__trigger"
     aria-haspopup="listbox"
     aria-expanded="false"
+    aria-label="Cambiar idioma"
     data-lang-trigger
   >
     <span class="lang-switcher__current" data-lang-current>ES</span>
+    <ChevronDown class="lang-switcher__chevron" size={16} stroke-width={1.75} aria-hidden="true" />
     <span class="sr-only">Cambiar idioma</span>
   </button>
 
   <ul class="lang-switcher__menu" role="listbox" aria-label="Seleccionar idioma" data-lang-menu>
-    {
-      languages.map((lang) => (
-        <li role="option" aria-selected={lang.code === 'es'}>
-          <button type="button" class="lang-switcher__option" data-lang-option data-lang-code={lang.code}>
-            <span class="lang-switcher__option-code">{lang.nativeLabel}</span>
-            <span class="lang-switcher__option-label">{lang.label}</span>
-          </button>
-        </li>
-      ))
-    }
+    {languages.map((lang) => (
+      <li role="option" aria-selected={lang.code === 'es'}>
+        <button type="button" class="lang-switcher__option" data-lang-option data-lang-code={lang.code}>
+          <span class="lang-switcher__option-code">{lang.nativeLabel}</span>
+          <span class="lang-switcher__option-label">{lang.label}</span>
+        </button>
+      </li>
+    ))}
   </ul>
 </div>
 
 <style>
-  .lang-switcher {
-    position: relative;
-  }
-
+  .lang-switcher { position: relative; }
   .lang-switcher__trigger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2.75rem;
-    height: 2.75rem;
-    padding-inline: var(--space-3);
-    border-radius: var(--radius-md);
-    border: var(--border-width-thin) solid var(--color-border-default);
-    background-color: transparent;
-    color: var(--color-text-secondary);
-    font-family: var(--font-tech);
-    font-size: var(--text-xs);
-    font-weight: var(--font-weight-semibold);
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 2.75rem; height: 2.75rem; padding-inline: var(--space-3);
+    border-radius: var(--radius-md); border: var(--border-width-thin) solid var(--color-border-default);
+    background-color: transparent; color: var(--color-text-secondary);
+    font-family: var(--font-tech); font-size: var(--text-xs); font-weight: var(--font-weight-semibold);
     letter-spacing: var(--tracking-wider);
-    transition:
-      border-color var(--duration-fast) var(--ease-standard),
-      color var(--duration-fast) var(--ease-standard),
-      background-color var(--duration-fast) var(--ease-standard);
+    transition: border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
   }
-
-  .lang-switcher__trigger:hover {
-    color: var(--color-text-primary);
-    border-color: var(--color-border-strong);
-    background-color: var(--color-bg-surface-alt);
+  .lang-switcher__trigger:hover { color: var(--color-text-primary); border-color: var(--color-border-strong); background-color: var(--color-bg-surface-alt); }
+  .lang-switcher__trigger[aria-expanded='true'] { color: var(--color-accent); border-color: var(--color-border-accent); }
+  .lang-switcher__chevron {
+    flex-shrink: 0;
+    transition: transform var(--duration-fast) var(--ease-standard);
   }
-
-  .lang-switcher__trigger[aria-expanded='true'] {
-    color: var(--color-accent);
-    border-color: var(--color-border-accent);
-  }
-
+  .lang-switcher__trigger[aria-expanded='true'] .lang-switcher__chevron { transform: rotate(180deg); }
   .lang-switcher__menu {
-    position: absolute;
-    top: calc(100% + var(--space-2));
-    right: 0;
-    min-width: 10rem;
-    padding: var(--space-2);
-    background-color: var(--color-bg-surface);
-    border: var(--border-width-thin) solid var(--color-border-default);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    z-index: var(--z-overlay);
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-4px);
-    transition:
-      opacity var(--duration-fast) var(--ease-out),
-      transform var(--duration-fast) var(--ease-out),
-      visibility var(--duration-fast);
+    position: absolute; top: calc(100% + var(--space-2)); right: 0; min-width: 10rem; padding: var(--space-2);
+    background-color: var(--color-bg-surface); border: var(--border-width-thin) solid var(--color-border-default);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: var(--z-overlay);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), visibility var(--duration-fast);
   }
-
-  .lang-switcher[data-open='true'] .lang-switcher__menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-
+  .lang-switcher[data-open='true'] .lang-switcher__menu { opacity: 1; visibility: visible; transform: translateY(0); }
   .lang-switcher__option {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    width: 100%;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    color: var(--color-text-secondary);
-    font-size: var(--text-sm);
-    text-align: left;
-    transition:
-      background-color var(--duration-fast) var(--ease-standard),
-      color var(--duration-fast) var(--ease-standard);
+    display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm); color: var(--color-text-secondary); font-size: var(--text-sm); text-align: left;
+    transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+  }
+  .lang-switcher__option:hover { background-color: var(--color-bg-surface-alt); color: var(--color-text-primary); }
+  .lang-switcher__option[aria-selected='true'] { color: var(--color-accent); }
+  .lang-switcher__option-code { font-family: var(--font-tech); font-size: var(--text-xs); font-weight: var(--font-weight-semibold); color: var(--color-text-muted); min-width: 2ch; }
+
+
+  /* En el drawer móvil el selector no puede usar el dropdown absoluto de
+     escritorio: el trigger vive al final del viewport y el menú quedaba
+     renderizado fuera de pantalla. En móvil se expande dentro del propio
+     drawer para que todos los idiomas sean visibles y táctiles. */
+  @media (max-width: 900px) {
+    .lang-switcher {
+      width: 100%;
+    }
+
+    .lang-switcher__trigger {
+      width: 100%;
+      justify-content: space-between;
+      min-height: 2.75rem;
+    }
+
+    .lang-switcher__menu {
+      position: static;
+      display: none;
+      width: 100%;
+      min-width: 0;
+      margin-top: var(--space-2);
+      padding: var(--space-2);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-1);
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .lang-switcher[data-open='true'] .lang-switcher__menu {
+      display: grid;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    .lang-switcher__option {
+      min-height: 2.75rem;
+      padding: var(--space-2);
+    }
   }
 
-  .lang-switcher__option:hover {
-    background-color: var(--color-bg-surface-alt);
-    color: var(--color-text-primary);
+  @media (max-width: 380px) {
+    .lang-switcher__menu {
+      grid-template-columns: 1fr;
+    }
   }
 
-  .lang-switcher__option[aria-selected='true'] {
-    color: var(--color-accent);
+  @media (prefers-reduced-motion: reduce) {
+    .lang-switcher__trigger,
+    .lang-switcher__menu,
+    .lang-switcher__option,
+    .lang-switcher__chevron {
+      transition: none;
+    }
   }
 
-  .lang-switcher__option-code {
-    font-family: var(--font-tech);
-    font-size: var(--text-xs);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-muted);
-    width: 2ch;
-  }
 </style>
 
 <script>
-  const STORAGE_KEY = 'portfolio:lang';
+  import { DEFAULT_LANG, LANG_CHANGE_EVENT, LANG_STORAGE_KEY, isLangCode, languages } from '@/i18n/languages';
 
   function initLanguageSwitcher(root: HTMLElement) {
+    if (root.dataset.bound === 'true') return;
+    root.dataset.bound = 'true';
+
     const trigger = root.querySelector<HTMLButtonElement>('[data-lang-trigger]');
     const currentLabel = root.querySelector<HTMLElement>('[data-lang-current]');
     const options = root.querySelectorAll<HTMLButtonElement>('[data-lang-option]');
@@ -166,54 +147,50 @@ const languages: Language[] = [
       trigger.setAttribute('aria-expanded', String(open));
     };
 
-    const selectLanguage = (code: string, code_upper: string) => {
-      currentLabel.textContent = code === 'zh' ? '中文' : code_upper;
-      options.forEach((opt) => opt.setAttribute('aria-selected', String(opt.dataset.langCode === code)));
-      try {
-        sessionStorage.setItem(STORAGE_KEY, code);
-      } catch {
-        /* sessionStorage no disponible (modo privado, etc.) — no es crítico aquí */
-      }
-      document.dispatchEvent(new CustomEvent('portfolio:language-change', { detail: { lang: code } }));
+    const paintSelection = (code: string) => {
+      const meta = languages.find((lang) => lang.code === code) ?? languages[0];
+      currentLabel.textContent = meta.nativeLabel;
+      options.forEach((opt) => {
+        const selected = opt.dataset.langCode === code;
+        opt.setAttribute('aria-selected', String(selected));
+        opt.closest('[role="option"]')?.setAttribute('aria-selected', String(selected));
+      });
+    };
+
+    const selectLanguage = (code: string) => {
+      const lang = isLangCode(code) ? code : DEFAULT_LANG;
+      paintSelection(lang);
+      try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch { /* no-op */ }
+      document.dispatchEvent(new CustomEvent(LANG_CHANGE_EVENT, { detail: { lang } }));
       setOpen(false);
       trigger.focus();
     };
 
     trigger.addEventListener('click', () => setOpen(root.dataset.open !== 'true'));
-
-    options.forEach((opt) => {
-      opt.addEventListener('click', () => {
-        const code = opt.dataset.langCode ?? 'es';
-        selectLanguage(code, code.toUpperCase());
-      });
+    options.forEach((opt) => opt.addEventListener('click', () => selectLanguage(opt.dataset.langCode ?? DEFAULT_LANG)));
+    document.addEventListener('click', (event) => { if (!root.contains(event.target as Node)) setOpen(false); });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && root.dataset.open === 'true') { setOpen(false); trigger.focus(); }
     });
 
-    document.addEventListener('click', (e) => {
-      if (!root.contains(e.target as Node)) setOpen(false);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && root.dataset.open === 'true') {
-        setOpen(false);
-        trigger.focus();
-      }
-    });
-
-    // Restaura la selección previa de la sesión (preparación para el i18n real).
+    let saved = DEFAULT_LANG;
     try {
-      const saved = sessionStorage.getItem(STORAGE_KEY);
-      if (saved) selectLanguage(saved, saved.toUpperCase());
-    } catch {
-      /* no-op */
-    }
+      const stored = localStorage.getItem(LANG_STORAGE_KEY);
+      if (isLangCode(stored)) saved = stored;
+    } catch { /* no-op */ }
+    paintSelection(saved);
   }
 
   function initAll() {
     document.querySelectorAll<HTMLElement>('[data-lang-switcher]').forEach(initLanguageSwitcher);
   }
 
-  // Se ejecuta en la carga inicial y también tras cada navegación con
-  // ClientRouter (View Transitions), que no vuelve a ejecutar <script> por
-  // defecto — 'astro:page-load' es el hook recomendado por Astro para esto.
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll, { once: true });
+  } else {
+    initAll();
+  }
   document.addEventListener('astro:page-load', initAll);
 </script>

@@ -18,6 +18,11 @@ interface Props {
   disabled?: boolean;
   class?: string;
   ariaLabel?: string;
+  title?: string;
+  target?: string;
+  rel?: string;
+  download?: string | boolean;
+  [key: `data-${string}`]: string | undefined;
 }
 
 const {
@@ -28,6 +33,11 @@ const {
   disabled = false,
   class: className,
   ariaLabel,
+  title,
+  target,
+  rel,
+  download,
+  ...rest
 } = Astro.props;
 
 const Tag = href ? 'a' : 'button';
@@ -40,6 +50,11 @@ const Tag = href ? 'a' : 'button';
   disabled={!href && disabled ? true : undefined}
   aria-disabled={href && disabled ? 'true' : undefined}
   aria-label={ariaLabel}
+  title={title}
+  target={href ? target : undefined}
+  rel={href ? rel : undefined}
+  download={href ? download : undefined}
+  {...rest}
 >
   <span class="btn__icon btn__icon--left">
     <slot name="icon-left" />

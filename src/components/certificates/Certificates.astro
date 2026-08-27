@@ -1,0 +1,129 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import Card from '@/components/ui/Card.astro';
+import CertificateCard from './CertificateCard.astro';
+import { Loader } from '@lucide/astro';
+import { certificates } from '@/data/certificates';
+import type { CertificateCategory } from '@/data/certificates';
+import es from '@/i18n/es';
+
+const categories: CertificateCategory[] = ['local', 'global'];
+---
+
+<section id="certificates" class="certificates">
+  <div class="certificates__container">
+    <header class="certificates__header">
+      <Badge variant="neutral"><span data-certificates-badge>{es.certificates.badge}</span></Badge>
+      <h2 class="certificates__title" data-certificates-title>{es.certificates.title}</h2>
+      <p class="certificates__lead" data-certificates-lead>{es.certificates.lead}</p>
+    </header>
+
+    <div class="certificates__categories">
+      {categories.map((category) => {
+        const entries = certificates.filter((certificate) => certificate.category === category);
+        return (
+          <section class="certificates__category" data-certificate-category-section={category}>
+            <h3 data-certificate-category-heading>{es.certificates.categoryLabels[category]}</h3>
+            {entries.length > 0 ? (
+              <ul class="certificates__grid">
+                {entries.map((certificate) => <CertificateCard certificate={certificate} />)}
+              </ul>
+            ) : (
+              <Card class="certificates__empty">
+                <div class="certificates__empty-mark" aria-hidden="true">
+                  <Loader size={22} stroke-width={1.5} />
+                </div>
+                <div>
+                  <p class="certificates__sync" data-certificates-sync>{es.certificates.syncingText}</p>
+                  <p class="certificates__empty-copy" data-certificates-empty>{es.certificates.doneText}</p>
+                </div>
+              </Card>
+            )}
+          </section>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .certificates {
+    padding-block: var(--space-section-y);
+    scroll-margin-top: var(--header-height);
+  }
+
+  .certificates__container {
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .certificates__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-10);
+  }
+
+  .certificates__title {
+    font-size: var(--text-3xl);
+  }
+
+  .certificates__lead {
+    max-width: 48rem;
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .certificates__categories {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  .certificates__category > h3 {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-xl);
+  }
+
+  .certificates__grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .certificates__empty {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 8rem;
+  }
+
+  .certificates__empty-mark {
+    display: flex;
+    color: var(--color-accent);
+    opacity: 0.75;
+  }
+
+  .certificates__sync {
+    font-family: var(--font-tech);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+  }
+
+  .certificates__empty-copy {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 720px) {
+    .certificates {
+      padding-block: var(--space-10);
+    }
+
+    .certificates__categories {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

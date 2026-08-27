@@ -1,0 +1,102 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import ContactMethodCard from './ContactMethodCard.astro';
+import { contactMethods } from '@/data/contact';
+import es from '@/i18n/es';
+---
+
+<section id="contact" class="contact">
+  <div class="contact__container">
+    <header class="contact__header">
+      <Badge variant="accent"><span data-contact-badge>{es.contact.badge}</span></Badge>
+      <h2 class="contact__title" data-contact-title>{es.contact.title}</h2>
+      <p class="contact__lead" data-contact-lead>{es.contact.lead}</p>
+    </header>
+
+    <ul class="contact__grid" aria-label={es.contact.listAria} data-contact-list>
+      {contactMethods.map((method) => <ContactMethodCard method={method} />)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-block: var(--space-section-y);
+    scroll-margin-top: var(--header-height);
+  }
+
+  .contact__container {
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .contact__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    max-width: 50rem;
+    margin-bottom: var(--space-8);
+  }
+
+  .contact__title {
+    font-size: var(--text-3xl);
+  }
+
+  .contact__lead {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .contact__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 720px) {
+    .contact {
+      padding-block: var(--space-10);
+    }
+
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  function initContactCopy() {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy-contact]').forEach((button) => {
+      if (button.dataset.copyBound === 'true') return;
+      button.dataset.copyBound = 'true';
+      button.addEventListener('click', async () => {
+        const value = button.dataset.copyValue;
+        if (!value) return;
+        const label = button.querySelector<HTMLElement>('[data-copy-label]');
+        const success = button.dataset.labelCopied ?? 'Copiado';
+        const error = button.dataset.labelError ?? 'No se pudo copiar';
+        const idle = button.dataset.labelIdle ?? 'Copiar';
+        try {
+          await navigator.clipboard.writeText(value);
+          if (label) label.textContent = success;
+        } catch {
+          if (label) label.textContent = error;
+        }
+        window.setTimeout(() => {
+          if (label) label.textContent = idle;
+        }, 1800);
+      });
+    });
+  }
+
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContactCopy, { once: true });
+  } else {
+    initContactCopy();
+  }
+  document.addEventListener('astro:page-load', initContactCopy);
+</script>

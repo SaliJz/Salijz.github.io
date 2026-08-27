@@ -1,0 +1,98 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import SkillGroupCard from './SkillGroupCard.astro';
+import SoftSkillCard from './SoftSkillCard.astro';
+import { technicalSkills, softSkills } from '@/data/skills';
+import type { TechnicalSkillGroup } from '@/data/skills';
+import es from '@/i18n/es';
+
+const groups: TechnicalSkillGroup[] = ['language', 'engine', 'tool', 'other'];
+---
+
+<section id="skills" class="skills">
+  <div class="skills__container">
+    <header class="skills__header">
+      <Badge variant="neutral"><span data-skills-badge>{es.skills.badge}</span></Badge>
+      <h2 class="skills__title" data-skills-title>{es.skills.title}</h2>
+      <p class="skills__lead" data-skills-lead>{es.skills.lead}</p>
+    </header>
+
+    <div class="skills__block">
+      <h3 class="skills__subheading" data-skills-technical-heading>{es.skills.technicalHeading}</h3>
+      <div class="skills__technical-grid">
+        {groups.map((group) => (
+          <SkillGroupCard
+            group={group}
+            label={es.skills.groupLabels[group]}
+            skills={technicalSkills.filter((skill) => skill.group === group)}
+          />
+        ))}
+      </div>
+    </div>
+
+    <div class="skills__block">
+      <h3 class="skills__subheading" data-skills-soft-heading>{es.skills.softHeading}</h3>
+      <ul class="skills__soft-grid" aria-label={es.skills.softListAria} data-skills-soft-list>
+        {softSkills.map((skill) => <SoftSkillCard skill={skill} />)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills {
+    padding-block: var(--space-section-y);
+    scroll-margin-top: var(--header-height);
+  }
+
+  .skills__container {
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .skills__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-10);
+  }
+
+  .skills__title {
+    font-size: var(--text-3xl);
+  }
+
+  .skills__lead {
+    max-width: 48rem;
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .skills__block + .skills__block {
+    margin-top: var(--space-10);
+  }
+
+  .skills__subheading {
+    margin-bottom: var(--space-5);
+    font-size: var(--text-xl);
+  }
+
+  .skills__technical-grid,
+  .skills__soft-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 720px) {
+    .skills {
+      padding-block: var(--space-10);
+    }
+
+    .skills__technical-grid,
+    .skills__soft-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

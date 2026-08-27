@@ -1,0 +1,92 @@
+---
+/**
+ * Projects.astro ("Proyectos")
+ * Ensambla la sección real de Proyectos: cabecera, filtros y grid de
+ * ProjectCard. Sustituye el placeholder de la Etapa 3/5.
+ */
+import Badge from '@/components/ui/Badge.astro';
+import ProjectCard from './ProjectCard.astro';
+import ProjectFilters from './ProjectFilters.astro';
+import { projects } from '@/data/projects';
+---
+
+<section id="projects" class="projects">
+  <div class="projects__container">
+    <header class="projects__header">
+      <Badge variant="neutral">Proyectos</Badge>
+      <h2 class="projects__title">Proyectos</h2>
+      <p class="projects__lead">
+        Una muestra de proyectos de desarrollo de videojuegos, diseño técnico y QA. El contenido de
+        esta sección todavía es de ejemplo — se sustituirá por proyectos reales próximamente.
+      </p>
+    </header>
+
+    <ProjectFilters />
+
+    <p class="projects__empty" data-project-empty hidden>
+      Ningún proyecto coincide con este filtro todavía.
+    </p>
+
+    <ul class="projects__grid" data-project-grid aria-label="Lista de proyectos">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .projects {
+    padding-block: var(--space-section-y);
+    scroll-margin-top: var(--header-height);
+  }
+
+  .projects__container {
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .projects__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  .projects__title {
+    font-size: var(--text-3xl);
+  }
+
+  .projects__lead {
+    max-width: 46rem;
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .projects__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .projects__empty {
+    margin-top: var(--space-8);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .projects__empty:not([hidden]) {
+    display: block;
+  }
+
+  @media (max-width: 640px) {
+    .projects {
+      padding-block: var(--space-10);
+    }
+
+    .projects__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

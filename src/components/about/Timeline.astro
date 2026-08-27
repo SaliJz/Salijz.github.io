@@ -71,6 +71,9 @@ const progressRatio =
 
 <script>
   function initTimeline(root: HTMLElement) {
+    if (root.dataset.bound === 'true') return;
+    root.dataset.bound = 'true';
+
     const items = root.querySelectorAll<HTMLElement>('[data-timeline-item]');
     if (items.length === 0) return;
 
@@ -98,5 +101,12 @@ const progressRatio =
     document.querySelectorAll<HTMLElement>('[data-timeline]').forEach(initTimeline);
   }
 
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll, { once: true });
+  } else {
+    initAll();
+  }
   document.addEventListener('astro:page-load', initAll);
 </script>

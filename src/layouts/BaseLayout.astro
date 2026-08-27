@@ -7,6 +7,7 @@ import '@/styles/global.css';
 import { withBase } from '@/lib/assetPath';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import I18nController from '@/components/i18n/I18nController.astro';
 
 interface Props {
   title: string;
@@ -52,9 +53,18 @@ if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
       } catch {
         /* sessionStorage no disponible — el header simplemente arranca expandido */
       }
+
+      try {
+        const lang = localStorage.getItem('portfolio:lang');
+        const htmlLang = { es: 'es', en: 'en', fr: 'fr', pt: 'pt', zh: 'zh-Hans' }[lang ?? ''];
+        if (htmlLang) document.documentElement.lang = htmlLang;
+      } catch {
+        /* localStorage no disponible — español permanece como idioma inicial */
+      }
     </script>
   </head>
   <body>
+    <I18nController />
     <Header />
     <slot />
     <Footer />

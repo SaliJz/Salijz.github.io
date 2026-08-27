@@ -1,0 +1,63 @@
+---
+/**
+ * I18nController.astro
+ * Orquestador único del sistema de idiomas. No renderiza UI.
+ */
+---
+
+<script>
+  import { applyDictionary } from '@/i18n/apply';
+  import { DEFAULT_LANG, LANG_STORAGE_KEY, LANG_CHANGE_EVENT, isLangCode, languages } from '@/i18n';
+  import type { LangCode } from '@/i18n';
+  import { getCvHref, getCvFilename } from '@/lib/cvDownload';
+
+  let languageListenerBound = false;
+
+  function getStoredLang(): LangCode {
+    try {
+      const stored = localStorage.getItem(LANG_STORAGE_KEY);
+      if (isLangCode(stored)) return stored;
+    } catch {
+      /* localStorage no disponible — se usa el idioma por defecto */
+    }
+    return DEFAULT_LANG;
+  }
+
+  function updateHtmlLang(lang: LangCode) {
+    const meta = languages.find((language) => language.code === lang);
+    document.documentElement.lang = meta?.htmlLang ?? lang;
+  }
+
+  function updateCvLink(lang: LangCode) {
+    const link = document.querySelector<HTMLAnchorElement>('[data-cv-download] a');
+    if (!link) return;
+    link.href = getCvHref(lang);
+    link.setAttribute('download', getCvFilename(lang));
+  }
+
+  function applyLanguage(lang: LangCode) {
+    updateHtmlLang(lang);
+    applyDictionary(lang);
+    updateCvLink(lang);
+  }
+
+  function initI18n() {
+    applyLanguage(getStoredLang());
+
+    if (languageListenerBound) return;
+    languageListenerBound = true;
+    document.addEventListener(LANG_CHANGE_EVENT, ((event: CustomEvent<{ lang: string }>) => {
+      if (!isLangCode(event.detail.lang)) return;
+      applyLanguage(event.detail.lang);
+    }) as EventListener);
+  }
+
+  // Inicialización robusta: funciona tanto en la carga inicial del documento
+  // como después de una navegación gestionada por Astro ClientRouter.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initI18n, { once: true });
+  } else {
+    initI18n();
+  }
+  document.addEventListener('astro:page-load', initI18n);
+</script>

@@ -1,0 +1,269 @@
+---
+/**
+ * ProjectCard.astro
+ * Tarjeta reutilizable de proyecto. Reutiliza Card/Badge/Tag/Button del
+ * Design System — no define ningún color, tipografía o espaciado propio.
+ *
+ * Acciones: solo se renderiza un botón si existe una URL válida para esa
+ * acción (GitHub / YouTube / Descargar). Si el proyecto tiene `links.store`
+ * con una `url`, el botón "Descargar" se sustituye por el botón de esa
+ * plataforma (Steam, itch.io...) con su logo (ver BrandIcon.astro).
+ */
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tag from '@/components/ui/Tag.astro';
+import Button from '@/components/ui/Button.astro';
+import BrandIcon from '@/components/ui/BrandIcon.astro';
+import { Download, ImageOff } from '@lucide/astro';
+import { getPlatformDisplayLabel, projectStatusLabels, projectStatusVariants } from '@/data/projects';
+import type { Project } from '@/data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const platformLabel = getPlatformDisplayLabel(project.platforms);
+const statusLabel = projectStatusLabels[project.status];
+const statusVariant = projectStatusVariants[project.status];
+
+// Solo se resuelve un icono de marca para tiendas reconocidas; cualquier
+// otra plataforma de publicación sigue siendo un botón válido, solo que
+// sin logo específico (evita que el componente "se rompa" ante una tienda
+// nueva no contemplada).
+const storeIconName =
+  project.links.store?.name === 'Steam' ? 'steam' : project.links.store?.name === 'itch.io' ? 'itchio' : null;
+
+const techTags = [project.engine, ...project.languages, ...project.technologies];
+const hasRealAction = !project.isPlaceholder && Boolean(
+  project.links.github || project.links.youtube || project.links.download || project.links.store?.url
+);
+---
+
+<Card as="li" padding="none" interactive={hasRealAction} class="project-card" data-project-card data-project-id={project.id} data-project-status={project.status} data-platforms={project.platforms.join(',')}>
+  <div class="project-card__cover">
+    {
+      project.image.src ? (
+        <img
+          src={project.image.src}
+          alt={project.image.alt}
+          loading="lazy"
+          decoding="async"
+          class="project-card__image"
+        />
+      ) : (
+        <div class="project-card__placeholder" role="img" aria-label={project.image.alt}>
+          <ImageOff size={28} stroke-width={1.25} />
+        </div>
+      )
+    }
+
+    <div class="project-card__cover-meta">
+      <Badge variant={statusVariant}>{statusLabel}</Badge>
+    </div>
+  </div>
+
+  <div class="project-card__body">
+    <div class="project-card__heading">
+      <h3 class="project-card__title">{project.name}</h3>
+      <span class="project-card__platform">{platformLabel}</span>
+    </div>
+
+    <p class="project-card__description">{project.shortDescription}</p>
+
+    <dl class="project-card__meta">
+      <div>
+        <dt>Rol</dt>
+        <dd>{project.role}</dd>
+      </div>
+      <div>
+        <dt>Motor</dt>
+        <dd>{project.engine}</dd>
+      </div>
+    </dl>
+
+    <ul class="project-card__tags" aria-label="Tecnologías">
+      {
+        techTags.map((tech) => (
+          <li>
+            <Tag>{tech}</Tag>
+          </li>
+        ))
+      }
+    </ul>
+
+    {project.isPlaceholder && (
+      <p class="project-card__placeholder-note">
+        <Tag>Contenido pendiente de confirmar</Tag>
+      </p>
+    )}
+
+    {hasRealAction && (
+      <div class="project-card__actions">
+        {project.links.github && (
+          <Button variant="secondary" size="sm" href={project.links.github} ariaLabel={`Repositorio de ${project.name} en GitHub`} data-project-action="github">
+            <BrandIcon name="github" size={16} slot="icon-left" />
+            GitHub
+          </Button>
+        )}
+
+        {project.links.youtube && (
+          <Button variant="secondary" size="sm" href={project.links.youtube} ariaLabel={`Ver ${project.name} en YouTube`} data-project-action="youtube">
+            <BrandIcon name="youtube" size={16} slot="icon-left" />
+            YouTube
+          </Button>
+        )}
+
+        {project.links.store?.url ? (
+          <Button variant="ghost" size="sm" href={project.links.store.url} ariaLabel={`${project.name} en ${project.links.store.name}`} data-project-action="store" data-store-name={project.links.store.name}>
+            {storeIconName ? (
+              <BrandIcon name={storeIconName} size={16} slot="icon-left" />
+            ) : (
+              <Download size={16} slot="icon-left" />
+            )}
+            {project.links.store.name}
+          </Button>
+        ) : (
+          project.links.download && (
+            <Button variant="ghost" size="sm" href={project.links.download} ariaLabel={`Descargar ${project.name}`} data-project-action="download">
+              <Download size={16} slot="icon-left" />
+              Descargar
+            </Button>
+          )
+        )}
+      </div>
+    )}
+  </div>
+</Card>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* La regla de autor `display: flex` de arriba tiene mayor prioridad que
+     el `[hidden] { display: none }` de la hoja de estilos del navegador,
+     así que sin esto el atributo hidden (usado por ProjectFilters.astro
+     para filtrar sin recargar) quedaría sin efecto visual. */
+  .project-card[hidden] {
+    display: none;
+  }
+
+  .project-card__cover {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-color: var(--color-bg-surface-alt);
+  }
+
+  .project-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    background: linear-gradient(160deg, var(--color-bg-surface-alt), var(--color-bg-surface));
+  }
+
+  .project-card__cover-meta {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+
+  .project-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    flex: 1;
+  }
+
+  .project-card__heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .project-card__title {
+    font-size: var(--text-lg);
+  }
+
+  .project-card__platform {
+    flex-shrink: 0;
+    font-family: var(--font-tech);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .project-card__description {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+  }
+
+  .project-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    font-size: var(--text-xs);
+  }
+
+  .project-card__meta div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .project-card__meta dt {
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    font-family: var(--font-tech);
+  }
+
+  .project-card__meta dd {
+    color: var(--color-text-primary);
+  }
+
+  .project-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .project-card__placeholder-note {
+    margin-top: calc(var(--space-2) * -1);
+  }
+
+  .project-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: auto;
+    padding-top: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .project-card__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .project-card__actions :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

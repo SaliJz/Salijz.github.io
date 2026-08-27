@@ -30,7 +30,7 @@ const placeholder = {
     <div class="status-bar__group status-bar__group--center">
       <span class="status-bar__item status-bar__item--muted">{placeholder.version}</span>
       <span class="status-bar__separator" aria-hidden="true">·</span>
-      <span class="status-bar__item status-bar__item--muted">Última actualización: {placeholder.lastUpdate}</span>
+      <span class="status-bar__item status-bar__item--muted" data-last-update={placeholder.lastUpdate}>Última actualización: {placeholder.lastUpdate}</span>
     </div>
 
     <div class="status-bar__group status-bar__group--end">
@@ -40,9 +40,9 @@ const placeholder = {
         <span class="status-bar__status-label">ONLINE</span>
       </span>
 
-      <button type="button" class="status-bar__top" data-back-to-top aria-label="Volver al inicio">
+      <a href="#home" class="status-bar__top" data-back-to-top aria-label="Volver al inicio">
         <ArrowUp size={16} stroke-width={2} />
-      </button>
+      </a>
     </div>
   </div>
 </footer>
@@ -187,17 +187,3 @@ const placeholder = {
   }
 </style>
 
-<script>
-  function initFooter(footer: HTMLElement) {
-    const button = footer.querySelector<HTMLButtonElement>('[data-back-to-top]');
-    button?.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  function initAll() {
-    document.querySelectorAll<HTMLElement>('[data-status-bar]').forEach(initFooter);
-  }
-
-  document.addEventListener('astro:page-load', initAll);
-</script>
