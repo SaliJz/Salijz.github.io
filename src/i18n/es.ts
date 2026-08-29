@@ -8,7 +8,7 @@ import type { Dictionary } from './types';
  */
 const es: Dictionary = {
   meta: {
-    title: 'Joaquin Salinas — Technical Game Designer | Gameplay Programmer | Technical QA',
+    title: 'Joaquin Salinas | Portfolio',
     description: 'Portafolio de Joaquin Salinas: proyectos en Unity y C#, gameplay programming, technical game design y technical QA.',
   },
 

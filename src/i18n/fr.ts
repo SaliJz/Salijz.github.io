@@ -1,7 +1,7 @@
 import type { Dictionary } from './types';
 
 const fr: Dictionary = {
-  meta: { title: 'Joaquin Salinas — Technical Game Designer | Gameplay Programmer | Technical QA', description: 'Portfolio de Joaquin Salinas : projets Unity et C#, gameplay programming, technical game design et technical QA.' },
+  meta: { title: 'Joaquin Salinas | Portfolio', description: 'Portfolio de Joaquin Salinas : projets Unity et C#, gameplay programming, technical game design et technical QA.' },
 
   a11y: {
     skipLink: 'Aller au contenu',

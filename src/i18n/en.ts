@@ -2,7 +2,7 @@ import type { Dictionary } from './types';
 
 const en: Dictionary = {
   meta: {
-    title: 'Joaquin Salinas — Technical Game Designer | Gameplay Programmer | Technical QA',
+    title: 'Joaquin Salinas | Portfolio',
     description: 'Joaquin Salinas portfolio: Unity and C# projects, gameplay programming, technical game design, and technical QA.',
   },
 
