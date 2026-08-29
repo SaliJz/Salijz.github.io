@@ -16,10 +16,36 @@ interface Props {
 
 const { title, description = 'Portafolio profesional.' } = Astro.props;
 
-// Reutilizado del Layout.astro original: normaliza la URL canónica y fuerza
-// https:// para evitar mixed content si SITE_URL llega mal configurada.
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// URL pública normalizada para canonical, Open Graph y datos estructurados.
+const siteOrigin = Astro.site ?? new URL('https://salijz.github.io');
+const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
 if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
+
+const socialImageURL = new URL(withBase('/social-preview.png'), siteOrigin);
+const profileImageURL = new URL(withBase('/images/profile/joaquin-salinas.jpg'), siteOrigin);
+const homeURL = new URL(withBase('/'), siteOrigin);
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Joaquin Augusto Salinas Tuesta',
+  alternateName: 'Joaquin Salinas',
+  url: homeURL.href,
+  image: profileImageURL.href,
+  jobTitle: 'Technical Game Designer | Technical QA | Gameplay Programmer',
+  sameAs: [
+    'https://github.com/SaliJz',
+    'https://linkedin.com/in/joaquinsalinast',
+  ],
+  knowsAbout: [
+    'Unity',
+    'C#',
+    'Gameplay Systems',
+    'Technical Game Design',
+    'Technical QA',
+    'Game Development',
+  ],
+};
 ---
 
 <!doctype html>
@@ -28,8 +54,30 @@ if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href={canonicalURL} />
+    <meta name="author" content="Joaquin Salinas" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonicalURL.href} />
+
+    <!-- Open Graph: preview al compartir el enlace en LinkedIn, WhatsApp, Discord, Facebook, etc. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Joaquin Salinas | Portfolio" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:image" content={socialImageURL.href} />
+    <meta property="og:image:secure_url" content={socialImageURL.href} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Joaquin Salinas — Technical Game Designer, Technical QA y Gameplay Programmer" />
+    <meta property="og:locale" content="es_PE" />
+
+    <!-- Twitter/X Card usa la misma imagen social. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageURL.href} />
+    <meta name="twitter:image:alt" content="Joaquin Salinas — Technical Game Designer, Technical QA y Gameplay Programmer" />
 
     <link rel="icon" type="image/png" sizes="16x16" href={withBase('/favicon-16x16.png')} />
     <link rel="icon" type="image/png" sizes="32x32" href={withBase('/favicon-32x32.png')} />
@@ -40,6 +88,7 @@ if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
     <meta name="theme-color" content="#0a1628" />
 
     <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
 
     <ClientRouter />
 

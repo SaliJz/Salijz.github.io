@@ -9,7 +9,7 @@ import type { Dictionary } from './types';
 const es: Dictionary = {
   meta: {
     title: 'Joaquin Salinas | Portfolio',
-    description: 'Portafolio de Joaquin Salinas: proyectos en Unity y C#, gameplay programming, technical game design y technical QA.',
+    description: 'Portafolio de Joaquin Salinas: proyectos en Unity y C#, technical game design, technical QA y gameplay programming.',
   },
 
   a11y: {
@@ -39,12 +39,12 @@ const es: Dictionary = {
   hero: {
     badge: 'Game Dev · Technical Design · QA',
     namePlaceholder: 'Joaquin Augusto Salinas Tuesta',
-    role: 'Technical Game Designer · Gameplay Programmer · Technical QA',
+    role: 'Technical Game Designer · Technical QA · Gameplay Programmer',
     intro:
       'Estudiante de Diseño de Videojuegos con experiencia desarrollando proyectos en Unity y C#. He trabajado en sistemas de gameplay, diseño técnico, optimización y QA, combinando implementación de mecánicas con pruebas y debugging para mejorar la estabilidad de la experiencia.',
     tags: ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/GitHub'],
     specializationsAria: 'Áreas de especialización',
-    aspiration: 'Busco oportunidades en Gameplay Programming, Technical Game Design y Technical QA para contribuir en proyectos reales y seguir desarrollando mis habilidades.',
+    aspiration: 'Mi perfil se orienta principalmente al Technical Game Design y Technical QA, complementado con experiencia en Gameplay Programming.',
     ctaProjects: 'Ver proyectos',
     ctaCv: 'Descargar CV',
     ctaCvAria: 'Descargar CV en PDF',
@@ -109,7 +109,7 @@ const es: Dictionary = {
   projects: {
     badge: 'Proyectos',
     title: 'Proyectos',
-    lead: 'Proyectos académicos en los que he trabajado principalmente en gameplay programming, diseño técnico, optimización y QA utilizando Unity, C# y Git/GitHub.',
+    lead: 'Proyectos académicos en los que he trabajado principalmente en diseño técnico, QA, optimización y gameplay programming utilizando Unity, C# y Git/GitHub.',
     filtersAria: 'Filtrar proyectos por plataforma',
     filters: { all: 'Todos', pc: 'PC', mobile: 'Móvil', console: 'Consola', multiplatform: 'Multiplataforma' },
     emptyMessage: 'Ningún proyecto coincide con este filtro.',
@@ -214,7 +214,7 @@ const es: Dictionary = {
 
   footer: {
     namePlaceholder: 'Joaquin Augusto Salinas Tuesta',
-    role: 'Technical Game Designer · Gameplay Programmer · Technical QA',
+    role: 'Technical Game Designer · Technical QA · Gameplay Programmer',
     lastUpdateLabel: 'Última actualización',
     systemStatusLabel: 'SYSTEM STATUS',
     onlineLabel: 'ONLINE',
