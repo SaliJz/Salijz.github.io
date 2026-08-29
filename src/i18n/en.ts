@@ -64,7 +64,7 @@ const en: Dictionary = {
       'project-eden-404': { period: 'Mar 2025 — Jul 2025', title: 'Eden 404', context: '3D First-Person Shooter · Academic project', description: 'Implemented gameplay mechanics and player interaction systems, solved technical issues affecting stability and performance, and optimized procedural systems.' },
       'project-forsaken-rules': { period: 'Sep 2025 — Jul 2026', title: 'Forsaken Rules', context: '3D Isometric Roguelike · Published on Steam', description: 'Developed core gameplay systems in Unity/C#, designed modular systems, conducted continuous technical playtesting, and contributed to gameplay stability and runtime performance optimization.' },
       'project-franklins-journey': { period: 'Sep 2025 — Nov 2025', title: "Franklin's Journey", context: '2D Bullet Hell · Android', description: 'Developed an efficient projectile management system for large-scale bullet spawning, optimized mobile performance, and performed functional testing and technical validation.' },
-      'recognition-guardianes': { period: 'May 2026', title: 'Certificate of Contribution', context: 'Tourism Care Civil Association', description: 'Recognized for contributing gameplay systems to the educational project Guardianes del Humedal Virtual World.' },
+      'recognition-guardianes': { period: 'May 2026', title: 'Certificate of Contribution', context: 'Tourism Care Civil Association', description: 'Recognized for contributing to the Guardianes del Humedal project.' },
     },
   },
 
@@ -85,9 +85,9 @@ const en: Dictionary = {
     platformLabels: { pc: 'PC', mobile: 'Mobile', console: 'Console', web: 'Web' },
     platformSoloPrefix: 'Only', platformMultiLabel: 'Multiplatform', platformUnknownLabel: 'To be confirmed',
     entries: {
-      'forsaken-rules': { imageAlt: 'Forsaken Rules screenshot — pending', name: 'Forsaken Rules', shortDescription: '3D isometric roguelike published on Steam. Developed gameplay systems and reusable mechanics in Unity/C#, modular architecture, technical playtesting, and performance optimization.', role: 'Gameplay Programmer / Technical Game Designer' },
-      'eden-404': { imageAlt: 'Eden 404 screenshot — pending', name: 'Eden 404', shortDescription: '3D first-person shooter where I implemented gameplay mechanics and player interaction systems, solved stability and performance issues, and optimized procedural systems.', role: 'Gameplay Programmer / Technical Designer' },
-      'franklins-journey': { imageAlt: "Franklin's Journey screenshot — pending", name: "Franklin's Journey", shortDescription: '2D bullet hell for Android. Developed an efficient projectile management system, optimized mobile performance, and performed functional testing and technical validation.', role: 'Gameplay Programmer' },
+      'forsaken-rules': { imageAlt: 'Forsaken Rules key art featuring the logo and main characters', name: 'Forsaken Rules', shortDescription: '3D isometric roguelike published on Steam. Developed gameplay systems and reusable mechanics in Unity/C#, modular architecture, technical playtesting, and performance optimization.', role: 'Gameplay Programmer / Technical Game Designer' },
+      'eden-404': { imageAlt: 'Promotional image for Eden 404 with the main character and project logo', name: 'Eden 404', shortDescription: '3D first-person shooter where I implemented gameplay mechanics and player interaction systems, solved stability and performance issues, and optimized procedural systems.', role: 'Gameplay Programmer / Technical Designer' },
+      'franklins-journey': { imageAlt: "Title screen for Franklin's Journey", name: "Franklin's Journey", shortDescription: '2D bullet hell for Android. Developed an efficient projectile management system, optimized mobile performance, and performed functional testing and technical validation.', role: 'Gameplay Programmer' },
     },
   },
 
@@ -97,10 +97,37 @@ const en: Dictionary = {
   },
 
   certificates: {
-    badge: 'Certificates', title: 'Certificates and recognition', lead: 'Recognition and credentials related to game development projects.',
-    categoryLabels: { local: 'Local recognition', global: 'Global credentials' }, syncingText: 'Record pending', doneText: 'No credentials in this category yet.',
-    verifyAction: 'Verify', verifyAria: (name) => `Verify credential: ${name}`, statusLabels: { active: 'Issued', expired: 'Expired', 'in-progress': 'In progress' },
-    entries: { 'tourism-care-contribution': { name: 'Certificate of Contribution', issuer: 'Tourism Care Civil Association', description: 'Recognized for contributing gameplay systems to the educational project Guardianes del Humedal Virtual World.' } },
+    badge: 'Certificates',
+    title: 'Certificates and recognition',
+    lead: 'Recognition and credentials related to training, languages, and projects.',
+    categoryLabels: { local: 'Local recognition', global: 'Global credentials' },
+    syncingText: 'Record pending',
+    doneText: 'No credentials in this category yet.',
+    verifyAction: 'View certificate',
+    verifyAria: (name) => `Open certificate: ${name}`,
+    statusLabels: { active: 'Issued', expired: 'Expired', 'in-progress': 'In progress' },
+    entries: {
+      'tourism-care-contribution': {
+        name: 'Certificate of Contribution',
+        issuer: 'Tourism Care Civil Association',
+        description: 'Recognition for the contribution made to the Guardianes del Humedal project.',
+      },
+      'office-domain-romero': {
+        name: 'Microsoft Office Proficiency',
+        issuer: 'Fundación Romero · Becas Grupo Romero',
+        description: 'Course successfully completed with a duration of 80 academic hours.',
+      },
+      'advanced-english-british-center': {
+        name: 'Advanced English',
+        issuer: 'El Centro Británico · Ucayali',
+        description: 'Advanced English training certificate with a duration of 440 hours.',
+      },
+      'ef-set-c1-advanced': {
+        name: 'EF SET English Certificate — C1 Advanced',
+        issuer: 'EF SET',
+        description: 'Score of 69/100, corresponding to C1 Advanced on the CEFR.',
+      },
+    },
   },
 
   contact: {

@@ -2,6 +2,7 @@
  * Fuente de datos invariantes de Proyectos. El copy localizado se resuelve
  * desde src/i18n/* usando el id estable de cada proyecto.
  */
+import { withBase } from '@/lib/assetPath';
 
 export type ProjectPlatform = 'pc' | 'mobile' | 'console' | 'web';
 export type ProjectStatus = 'completed' | 'in-development' | 'prototype' | 'game-jam';
@@ -17,7 +18,7 @@ export interface ProjectLinks {
   youtube?: string;
   download?: string;
   store?: {
-    name: 'Steam' | 'itch.io' | string;
+    name: 'Steam' | 'itch.io' | 'Play Store' | string;
     url: string;
   };
 }
@@ -96,7 +97,10 @@ export const projects: Project[] = [
     name: 'Forsaken Rules',
     shortDescription:
       'Roguelike isométrico 3D publicado en Steam. Desarrollo de sistemas de gameplay y mecánicas en Unity/C#, arquitectura modular, playtesting técnico y optimización.',
-    image: { alt: 'Captura de Forsaken Rules — pendiente de añadir' },
+    image: {
+      src: withBase('/images/projects/forsaken-rules.jpg'),
+      alt: 'Arte promocional de Forsaken Rules con logotipo y personajes del juego',
+    },
     role: 'Gameplay Programmer / Technical Game Designer',
     engine: 'Unity',
     languages: ['C#'],
@@ -118,7 +122,10 @@ export const projects: Project[] = [
     name: 'Eden 404',
     shortDescription:
       'FPS 3D en el que implementé mecánicas de gameplay y sistemas de interacción, resolví problemas de estabilidad y rendimiento y optimicé sistemas procedurales.',
-    image: { alt: 'Captura de Eden 404 — pendiente de añadir' },
+    image: {
+      src: withBase('/images/projects/eden-404.png'),
+      alt: 'Imagen promocional de Eden 404 con personaje principal y logotipo del proyecto',
+    },
     role: 'Gameplay Programmer / Technical Designer',
     engine: 'Unity',
     languages: ['C#'],
@@ -136,7 +143,10 @@ export const projects: Project[] = [
     name: 'El Viaje de Franklin',
     shortDescription:
       'Bullet Hell 2D para Android. Desarrollé un sistema eficiente para la generación masiva de proyectiles, optimicé el rendimiento móvil y realicé validación funcional.',
-    image: { alt: 'Captura de El Viaje de Franklin — pendiente de añadir' },
+    image: {
+      src: withBase('/images/projects/el-viaje-de-franklin.jpg'),
+      alt: 'Pantalla de título de El Viaje de Franklin',
+    },
     role: 'Gameplay Programmer',
     engine: 'Unity',
     languages: ['C#'],

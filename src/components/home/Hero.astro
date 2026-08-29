@@ -15,6 +15,7 @@ import ProfileVisual from './ProfileVisual.astro';
 import NetworkVisual from './NetworkVisual.astro';
 import { ArrowRight, Download, Mail, Target } from '@lucide/astro';
 import { CV_DOWNLOADS_READY, getCvHref } from '@/lib/cvDownload';
+import { withBase } from '@/lib/assetPath';
 
 const specializations = ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/GitHub'];
 ---
@@ -24,7 +25,10 @@ const specializations = ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/
     <!-- ================= COLUMNA IZQUIERDA ================= -->
     <div class="hero__content">
       <div class="hero__identity">
-        <ProfileVisual />
+        <ProfileVisual
+          src={withBase('/images/profile/joaquin-salinas.jpg')}
+          alt="Fotografía profesional de Joaquin Augusto Salinas Tuesta"
+        />
 
         <div class="hero__heading">
           <Badge variant="accent">Game Dev · Technical Design · QA</Badge>
@@ -103,7 +107,12 @@ const specializations = ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/
 <style>
   .hero {
     position: relative;
-    padding-block: var(--space-section-y);
+    /* El Hero empieza inmediatamente después del header sticky. Usar el
+       espaciado vertical completo de una sección también arriba dejaba un
+       hueco visual innecesario antes de la foto/presentación. Conservamos
+       el ritmo amplio al final de la sección y reducimos solo el inicio. */
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-section-y);
     overflow: hidden;
     /* Refuerzo explícito del offset del header sticky para navegación por
        ancla (además de scroll-padding-top en html, Etapa 3) — ver
@@ -223,7 +232,8 @@ const specializations = ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/
 
   @media (max-width: 640px) {
     .hero {
-      padding-block: var(--space-8);
+      padding-top: var(--space-4);
+      padding-bottom: var(--space-8);
     }
 
     .hero__grid {

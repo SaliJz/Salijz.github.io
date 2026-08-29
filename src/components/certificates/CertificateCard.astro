@@ -22,7 +22,7 @@ const variants = { active: 'success', expired: 'neutral', 'in-progress': 'accent
   {certificate.issued && <p class="certificate-card__meta">{certificate.issued}</p>}
   {certificate.verificationUrl && (
     <div class="certificate-card__action">
-      <Button variant="secondary" size="sm" href={certificate.verificationUrl} ariaLabel={es.certificates.verifyAria(certificate.name)}>
+      <Button variant="secondary" size="sm" href={certificate.verificationUrl} target="_blank" rel="noopener noreferrer" ariaLabel={es.certificates.verifyAria(certificate.name)}>
         <span data-certificate-verify-label>{es.certificates.verifyAction}</span>
         <ExternalLink slot="icon-right" size={14} />
       </Button>

@@ -31,12 +31,13 @@ if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Favicon: se conservan los archivos existentes como placeholder
-         hasta que se genere el set definitivo con la identidad del portafolio. -->
-    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-    <link rel="icon" href={withBase('/images/favicons/favicon.ico')} sizes="any" />
-    <link rel="apple-touch-icon" href={withBase('/images/favicons/apple-icon-180x180.png')} />
+    <link rel="icon" type="image/png" sizes="16x16" href={withBase('/favicon-16x16.png')} />
+    <link rel="icon" type="image/png" sizes="32x32" href={withBase('/favicon-32x32.png')} />
+    <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48x48.png')} />
+    <link rel="shortcut icon" href={withBase('/favicon.ico')} />
+    <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
     <link rel="manifest" href={withBase('/manifest.json')} />
+    <meta name="theme-color" content="#0a1628" />
 
     <title>{title}</title>
 
