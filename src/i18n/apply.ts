@@ -122,6 +122,7 @@ function applyAbout(d: Dictionary) {
     if (!id) return;
     const copy = d.timeline.entries[id];
     if (copy) {
+      setText(item.querySelector('.timeline-item__period'), copy.period);
       setText(item.querySelector('.timeline-item__title'), copy.title);
       setText(item.querySelector('.timeline-item__context'), copy.context);
       setText(item.querySelector('.timeline-item__description'), copy.description);
@@ -163,6 +164,8 @@ function applyProjects(d: Dictionary) {
       setText(card.querySelector('.project-card__title'), copy.name);
       setText(card.querySelector('.project-card__description'), copy.shortDescription);
       setText(card.querySelector('.project-card__meta dd'), copy.role);
+      setAttr(card.querySelector('.project-card__placeholder'), 'aria-label', copy.imageAlt);
+      setAttr(card.querySelector('.project-card__image'), 'alt', copy.imageAlt);
     }
 
     const status = card.dataset.projectStatus as keyof Dictionary['projects']['statusLabels'] | undefined;
@@ -240,12 +243,19 @@ function applyCertificates(d: Dictionary) {
     if (category) setText(categorySection.querySelector('[data-certificate-category-heading]'), d.certificates.categoryLabels[category]);
   });
   section.querySelectorAll<HTMLElement>('[data-certificate-status]').forEach((card) => {
+    const id = card.dataset.certificateId;
+    const copy = id ? d.certificates.entries[id] : undefined;
+    if (copy) {
+      setText(card.querySelector('[data-certificate-name]'), copy.name);
+      setText(card.querySelector('[data-certificate-issuer]'), copy.issuer);
+      setText(card.querySelector('[data-certificate-description]'), copy.description);
+    }
     const status = card.dataset.certificateStatus as keyof Dictionary['certificates']['statusLabels'] | undefined;
     if (status) setText(card.querySelector('[data-certificate-status-label]'), d.certificates.statusLabels[status]);
     const category = card.querySelector<HTMLElement>('[data-certificate-category]')?.dataset.certificateCategory as keyof Dictionary['certificates']['categoryLabels'] | undefined;
     if (category) setText(card.querySelector('[data-certificate-category]'), d.certificates.categoryLabels[category]);
     setText(card.querySelector('[data-certificate-verify-label]'), d.certificates.verifyAction);
-    const name = card.querySelector('.certificate-card__name')?.textContent?.trim() ?? '';
+    const name = copy?.name ?? card.querySelector('.certificate-card__name')?.textContent?.trim() ?? '';
     setAttr(card.querySelector('a'), 'aria-label', d.certificates.verifyAria(name));
   });
 }

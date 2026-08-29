@@ -30,12 +30,14 @@ const groups: TechnicalSkillGroup[] = ['language', 'engine', 'tool', 'other'];
       </div>
     </div>
 
-    <div class="skills__block">
-      <h3 class="skills__subheading" data-skills-soft-heading>{es.skills.softHeading}</h3>
-      <ul class="skills__soft-grid" aria-label={es.skills.softListAria} data-skills-soft-list>
-        {softSkills.map((skill) => <SoftSkillCard skill={skill} />)}
-      </ul>
-    </div>
+    {softSkills.length > 0 && (
+      <div class="skills__block">
+        <h3 class="skills__subheading" data-skills-soft-heading>{es.skills.softHeading}</h3>
+        <ul class="skills__soft-grid" aria-label={es.skills.softListAria} data-skills-soft-list>
+          {softSkills.map((skill) => <SoftSkillCard skill={skill} />)}
+        </ul>
+      </div>
+    )}
   </div>
 </section>
 

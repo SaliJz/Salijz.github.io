@@ -16,8 +16,9 @@ const variants = { active: 'success', expired: 'neutral', 'in-progress': 'accent
     <Badge variant={variants[certificate.status]}><span data-certificate-status-label>{es.certificates.statusLabels[certificate.status]}</span></Badge>
     <span class="certificate-card__category" data-certificate-category={certificate.category}>{es.certificates.categoryLabels[certificate.category]}</span>
   </div>
-  <h4 class="certificate-card__name">{certificate.name}</h4>
-  <p class="certificate-card__issuer">{certificate.issuer}</p>
+  <h4 class="certificate-card__name" data-certificate-name>{certificate.name}</h4>
+  <p class="certificate-card__issuer" data-certificate-issuer>{certificate.issuer}</p>
+  {certificate.description && <p class="certificate-card__description" data-certificate-description>{certificate.description}</p>}
   {certificate.issued && <p class="certificate-card__meta">{certificate.issued}</p>}
   {certificate.verificationUrl && (
     <div class="certificate-card__action">
@@ -53,6 +54,13 @@ const variants = { active: 'success', expired: 'neutral', 'in-progress': 'accent
   .certificate-card__issuer {
     margin-top: var(--space-1);
     color: var(--color-text-secondary);
+  }
+
+  .certificate-card__description {
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
   }
 
   .certificate-card__meta,

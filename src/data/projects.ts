@@ -1,23 +1,13 @@
 /**
- * projects.ts
- * Fuente de datos de la sección Proyectos. Añadir, quitar o reordenar
- * proyectos es editar únicamente `projects` — ProjectCard.astro y
- * Projects.astro no necesitan tocarse.
- *
- * Preparación para i18n: cada proyecto tiene un `id` (slug) estable, igual
- * que el patrón ya usado en `timeline.ts`. Cuando exista el sistema de
- * traducción, los campos de texto se sustituirán por búsquedas indexadas
- * por ese id (p. ej. `t(`projects.${id}.shortDescription`)`).
+ * Fuente de datos invariantes de Proyectos. El copy localizado se resuelve
+ * desde src/i18n/* usando el id estable de cada proyecto.
  */
 
 export type ProjectPlatform = 'pc' | 'mobile' | 'console' | 'web';
-
 export type ProjectStatus = 'completed' | 'in-development' | 'prototype' | 'game-jam';
-
 export type ProjectType = 'personal' | 'academic' | 'game-jam' | 'collaborative' | 'client';
 
 export interface ProjectImage {
-  /** Ruta dentro de public/ (o URL absoluta). Si se omite, ProjectCard usa un placeholder. */
   src?: string;
   alt: string;
 }
@@ -25,13 +15,7 @@ export interface ProjectImage {
 export interface ProjectLinks {
   github?: string;
   youtube?: string;
-  /** Descarga directa (ZIP, ejecutable, itch.io "descargar", etc.) — se ignora si `store` está presente. */
   download?: string;
-  /**
-   * Plataforma de publicación (Steam, itch.io...). Si está presente y
-   * `storeUrl` es válido, el botón "Descargar" se sustituye por el botón
-   * de la tienda correspondiente (ver ProjectCard.astro).
-   */
   store?: {
     name: 'Steam' | 'itch.io' | string;
     url: string;
@@ -39,11 +23,9 @@ export interface ProjectLinks {
 }
 
 export interface Project {
-  /** slug estable — clave futura de traducción i18n, también usado como `key` de render. */
   id: string;
   name: string;
   shortDescription: string;
-  /** Descripción ampliada, preparada para una futura vista de detalle. No se usa todavía. */
   longDescription?: string;
   image: ProjectImage;
   role: string;
@@ -54,7 +36,6 @@ export interface Project {
   status: ProjectStatus;
   type: ProjectType;
   links: ProjectLinks;
-  /** Contenido de relleno pendiente de confirmar — ver informe de la Etapa 6. */
   isPlaceholder?: boolean;
 }
 
@@ -66,9 +47,9 @@ export const projectPlatformLabels: Record<ProjectPlatform, string> = {
 };
 
 export const projectStatusLabels: Record<ProjectStatus, string> = {
-  completed: 'Completed',
-  'in-development': 'In Development',
-  prototype: 'Prototype',
+  completed: 'Completado',
+  'in-development': 'En desarrollo',
+  prototype: 'Prototipo',
   'game-jam': 'Game Jam',
 };
 
@@ -87,11 +68,6 @@ export const projectTypeLabels: Record<ProjectType, string> = {
   client: 'Cliente',
 };
 
-/**
- * Devuelve una etiqueta legible para la combinación de plataformas de un
- * proyecto ("Solo PC", "PC + Consola", "Multiplataforma"...). Añadir una
- * nueva plataforma a `ProjectPlatform` no requiere tocar esta función.
- */
 export function getPlatformDisplayLabel(platforms: ProjectPlatform[]): string {
   if (platforms.length === 0) return 'Por confirmar';
   if (platforms.length === 1) return `Solo ${projectPlatformLabels[platforms[0]]}`;
@@ -101,17 +77,11 @@ export function getPlatformDisplayLabel(platforms: ProjectPlatform[]): string {
 
 export type ProjectFilterId = 'all' | 'pc' | 'mobile' | 'console' | 'multiplatform';
 
-/**
- * Filtros disponibles. ProjectFilters.astro solo itera sobre este array —
- * añadir un filtro nuevo (p. ej. 'web') es agregar una entrada aquí y a
- * `projectMatchesFilter`, sin tocar el componente visual.
- */
+// Solo se muestran filtros que actualmente tienen contenido real.
 export const projectFilters: { id: ProjectFilterId; label: string }[] = [
   { id: 'all', label: 'Todos' },
   { id: 'pc', label: 'PC' },
   { id: 'mobile', label: 'Móvil' },
-  { id: 'console', label: 'Consola' },
-  { id: 'multiplatform', label: 'Multiplataforma' },
 ];
 
 export function projectMatchesFilter(project: Project, filter: ProjectFilterId): boolean {
@@ -120,76 +90,63 @@ export function projectMatchesFilter(project: Project, filter: ProjectFilterId):
   return project.platforms.includes(filter);
 }
 
-/**
- * Proyectos de ejemplo/placeholder. Ninguno corresponde a un proyecto,
- * repositorio, estudio o resultado real — ver la sección "Información
- * necesaria" del informe de la Etapa 6 para lo que hace falta confirmar
- * antes de sustituirlos.
- */
 export const projects: Project[] = [
   {
-    id: 'proyecto-placeholder-uno',
-    name: 'Proyecto destacado (pendiente)',
+    id: 'forsaken-rules',
+    name: 'Forsaken Rules',
     shortDescription:
-      'Placeholder: descripción corta de un proyecto de gameplay/sistemas. Sustituir por el proyecto real.',
-    longDescription:
-      'Placeholder de descripción ampliada, preparada para una futura vista de detalle del proyecto — todavía sin usar en esta etapa.',
-    image: { alt: 'Captura del proyecto — pendiente de subir' },
-    role: 'Rol por confirmar',
+      'Roguelike isométrico 3D publicado en Steam. Desarrollo de sistemas de gameplay y mecánicas en Unity/C#, arquitectura modular, playtesting técnico y optimización.',
+    image: { alt: 'Captura de Forsaken Rules — pendiente de añadir' },
+    role: 'Gameplay Programmer / Technical Game Designer',
     engine: 'Unity',
     languages: ['C#'],
-    technologies: ['Git', 'Jira'],
+    technologies: ['Git', 'GitHub', 'Technical QA', 'Performance Optimization'],
     platforms: ['pc'],
-    status: 'in-development',
-    type: 'personal',
-    links: {},
-    isPlaceholder: true,
-  },
-  {
-    id: 'proyecto-placeholder-dos',
-    name: 'Game Jam (pendiente)',
-    shortDescription:
-      'Placeholder: proyecto realizado en una game jam. Sustituir por el nombre y contexto reales del jam.',
-    image: { alt: 'Captura del proyecto — pendiente de subir' },
-    role: 'Rol por confirmar',
-    engine: 'Godot',
-    languages: ['GDScript'],
-    technologies: [],
-    platforms: ['pc', 'console'],
-    status: 'game-jam',
-    type: 'game-jam',
-    links: {},
-    isPlaceholder: true,
-  },
-  {
-    id: 'proyecto-placeholder-tres',
-    name: 'Proyecto móvil (pendiente)',
-    shortDescription:
-      'Placeholder: proyecto multiplataforma con foco en QA/testing. Sustituir por el proyecto real.',
-    image: { alt: 'Captura del proyecto — pendiente de subir' },
-    role: 'Rol por confirmar',
-    engine: 'Unreal Engine',
-    languages: ['C++', 'Blueprints'],
-    technologies: ['Perforce'],
-    platforms: ['pc', 'mobile', 'console'],
-    status: 'prototype',
+    status: 'completed',
     type: 'academic',
-    links: {},
-    isPlaceholder: true,
+    links: {
+      github: 'https://github.com/SaliJz/Proyecto-Taller-V-VI-Forsaken-Rules',
+      youtube: 'https://www.youtube.com/watch?v=vOmZ750VCJU',
+      store: {
+        name: 'Steam',
+        url: 'https://store.steampowered.com/app/4858720/Forsaken_Rules/',
+      },
+    },
   },
   {
-    id: 'proyecto-placeholder-cuatro',
-    name: 'Proyecto completado (pendiente)',
-    shortDescription: 'Placeholder: proyecto cerrado, sin enlaces públicos todavía. Sustituir cuando se confirme.',
-    image: { alt: 'Captura del proyecto — pendiente de subir' },
-    role: 'Rol por confirmar',
+    id: 'eden-404',
+    name: 'Eden 404',
+    shortDescription:
+      'FPS 3D en el que implementé mecánicas de gameplay y sistemas de interacción, resolví problemas de estabilidad y rendimiento y optimicé sistemas procedurales.',
+    image: { alt: 'Captura de Eden 404 — pendiente de añadir' },
+    role: 'Gameplay Programmer / Technical Designer',
     engine: 'Unity',
     languages: ['C#'],
-    technologies: [],
+    technologies: ['Git', 'GitHub', 'Procedural Systems', 'Performance Optimization'],
+    platforms: ['pc'],
+    status: 'completed',
+    type: 'academic',
+    links: {
+      github: 'https://github.com/SaliJz/Proyecto-Taller-IV-Eden-404',
+      youtube: 'https://youtu.be/n6NW1cAsjvc',
+    },
+  },
+  {
+    id: 'franklins-journey',
+    name: 'El Viaje de Franklin',
+    shortDescription:
+      'Bullet Hell 2D para Android. Desarrollé un sistema eficiente para la generación masiva de proyectiles, optimicé el rendimiento móvil y realicé validación funcional.',
+    image: { alt: 'Captura de El Viaje de Franklin — pendiente de añadir' },
+    role: 'Gameplay Programmer',
+    engine: 'Unity',
+    languages: ['C#'],
+    technologies: ['Git', 'GitHub', 'Technical QA', 'Functional Testing'],
     platforms: ['mobile'],
     status: 'completed',
     type: 'academic',
-    links: {},
-    isPlaceholder: true,
+    links: {
+      github: 'https://github.com/SaliJz/Gamification_2025-Franklins-Journey',
+      youtube: 'https://youtu.be/z5QV23KgwcI',
+    },
   },
 ];

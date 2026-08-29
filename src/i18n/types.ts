@@ -15,6 +15,7 @@
  */
 
 export interface TimelineEntryText {
+  period: string;
   title: string;
   context: string;
   description: string;
@@ -22,6 +23,7 @@ export interface TimelineEntryText {
 
 export interface ProjectEntryText {
   name: string;
+  imageAlt: string;
   shortDescription: string;
   role: string;
 }
@@ -35,6 +37,12 @@ export interface ContactMethodText {
   label: string;
   description: string;
   accessibleLabel: string;
+}
+
+export interface CertificateEntryText {
+  name: string;
+  issuer: string;
+  description?: string;
 }
 
 export interface Dictionary {
@@ -185,6 +193,7 @@ export interface Dictionary {
       expired: string;
       'in-progress': string;
     };
+    entries: Record<string, CertificateEntryText>;
   };
 
   contact: {

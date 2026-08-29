@@ -102,21 +102,21 @@ const hasRealAction = !project.isPlaceholder && Boolean(
     {hasRealAction && (
       <div class="project-card__actions">
         {project.links.github && (
-          <Button variant="secondary" size="sm" href={project.links.github} ariaLabel={`Repositorio de ${project.name} en GitHub`} data-project-action="github">
+          <Button variant="secondary" size="sm" href={project.links.github} target="_blank" rel="noopener noreferrer" ariaLabel={`Repositorio de ${project.name} en GitHub`} data-project-action="github">
             <BrandIcon name="github" size={16} slot="icon-left" />
             GitHub
           </Button>
         )}
 
         {project.links.youtube && (
-          <Button variant="secondary" size="sm" href={project.links.youtube} ariaLabel={`Ver ${project.name} en YouTube`} data-project-action="youtube">
+          <Button variant="secondary" size="sm" href={project.links.youtube} target="_blank" rel="noopener noreferrer" ariaLabel={`Ver ${project.name} en YouTube`} data-project-action="youtube">
             <BrandIcon name="youtube" size={16} slot="icon-left" />
             YouTube
           </Button>
         )}
 
         {project.links.store?.url ? (
-          <Button variant="ghost" size="sm" href={project.links.store.url} ariaLabel={`${project.name} en ${project.links.store.name}`} data-project-action="store" data-store-name={project.links.store.name}>
+          <Button variant="ghost" size="sm" href={project.links.store.url} target="_blank" rel="noopener noreferrer" ariaLabel={`${project.name} en ${project.links.store.name}`} data-project-action="store" data-store-name={project.links.store.name}>
             {storeIconName ? (
               <BrandIcon name={storeIconName} size={16} slot="icon-left" />
             ) : (

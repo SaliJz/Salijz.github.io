@@ -1,10 +1,4 @@
-/**
- * skills.ts
- * Datos estructurales de la sección Habilidades. Los nombres de tecnologías
- * se consideran invariantes; las habilidades blandas usan ids estables para
- * resolver su copy desde i18n.
- */
-
+/** Datos profesionales confirmados en CV/Resume. */
 export type TechnicalSkillGroup = 'language' | 'engine' | 'tool' | 'other';
 
 export interface TechnicalSkill {
@@ -19,24 +13,28 @@ export interface SoftSkill {
   isPlaceholder?: boolean;
 }
 
-/**
- * Contenido de muestra pendiente de sustituir por la lista profesional
- * definitiva. No se muestran porcentajes ni niveles arbitrarios.
- */
 export const technicalSkills: TechnicalSkill[] = [
-  { id: 'tech-csharp', name: 'C#', group: 'language', isPlaceholder: true },
-  { id: 'tech-unity', name: 'Unity', group: 'engine', isPlaceholder: true },
-  { id: 'tech-git', name: 'Git', group: 'tool', isPlaceholder: true },
-  { id: 'tech-github', name: 'GitHub', group: 'tool', isPlaceholder: true },
-  { id: 'tech-qa', name: 'QA / Testing', group: 'other', isPlaceholder: true },
-  { id: 'tech-design', name: 'Technical Design', group: 'other', isPlaceholder: true },
+  { id: 'tech-csharp', name: 'C#', group: 'language' },
+  { id: 'tech-unity', name: 'Unity (2D/3D)', group: 'engine' },
+  { id: 'tech-git', name: 'Git', group: 'tool' },
+  { id: 'tech-github', name: 'GitHub', group: 'tool' },
+  { id: 'tech-clickup', name: 'ClickUp', group: 'tool' },
+  { id: 'tech-clockify', name: 'Clockify', group: 'tool' },
+  { id: 'tech-gameplay-systems', name: 'Gameplay Systems', group: 'other' },
+  { id: 'tech-systems-design', name: 'Systems Design', group: 'other' },
+  { id: 'tech-gdd', name: 'GDD Documentation', group: 'other' },
+  { id: 'tech-gsb', name: 'GSB Documentation', group: 'other' },
+  { id: 'tech-balancing', name: 'Gameplay Balancing', group: 'other' },
+  { id: 'tech-modular', name: 'Modular Architecture', group: 'other' },
+  { id: 'tech-procedural', name: 'Procedural Systems', group: 'other' },
+  { id: 'tech-performance', name: 'Performance Optimization', group: 'other' },
+  { id: 'tech-playtesting', name: 'Playtesting', group: 'other' },
+  { id: 'tech-bug-reporting', name: 'Bug Reporting', group: 'other' },
+  { id: 'tech-functional', name: 'Functional Testing', group: 'other' },
+  { id: 'tech-debugging', name: 'Debugging', group: 'other' },
+  { id: 'tech-regression', name: 'Regression Testing', group: 'other' },
+  { id: 'tech-qa', name: 'Technical QA', group: 'other' },
 ];
 
-export const softSkills: SoftSkill[] = [
-  { id: 'soft-teamwork', isPlaceholder: true },
-  { id: 'soft-communication', isPlaceholder: true },
-  { id: 'soft-problem-solving', isPlaceholder: true },
-  { id: 'soft-attention-detail', isPlaceholder: true },
-  { id: 'soft-adaptability', isPlaceholder: true },
-  { id: 'soft-time-management', isPlaceholder: true },
-];
+// El CV/Resume no declara un inventario formal de soft skills. Se evita inventarlas.
+export const softSkills: SoftSkill[] = [];

@@ -1,10 +1,7 @@
 import type { Dictionary } from './types';
 
 const pt: Dictionary = {
-  meta: {
-    title: 'Portfólio — em construção',
-    description: 'Seção principal do portfólio em desenvolvimento — ambiente temporário de validação do Layout Global e do Design System.',
-  },
+  meta: { title: 'Joaquin Salinas — Technical Game Designer | Gameplay Programmer | Technical QA', description: 'Portfólio de Joaquin Salinas: projetos em Unity e C#, gameplay programming, technical game design e technical QA.' },
 
   a11y: {
     skipLink: 'Pular para o conteúdo',
@@ -30,247 +27,21 @@ const pt: Dictionary = {
     langMenuAria: 'Selecionar idioma',
   },
 
-  hero: {
-    badge: 'Game Dev · Technical Design · QA',
-    namePlaceholder: 'Nome Sobrenome',
-    role: 'Game Developer · Technical Designer · QA Engineer',
-    intro:
-      'Projeto e construo sistemas de jogo com o mesmo cuidado com que os testo: da mecânica ao pipeline, e do pipeline à qualidade. Texto provisório — será substituído pelo texto definitivo.',
-    tags: ['Gameplay Programming', 'Design de Sistemas', 'QA & Automação', 'Ferramentas'],
-    specializationsAria: 'Áreas de especialização',
-    aspiration: 'Explorando o design de sistemas de combate e ferramentas para equipes de desenvolvimento.',
-    ctaProjects: 'Ver projetos',
-    ctaCv: 'Baixar currículo',
-    ctaCvAria: 'Baixar currículo em PDF',
-    ctaContact: 'Contato',
-    profileAvailable: 'Disponível',
-    profileAlt: 'Foto profissional — em breve',
-  },
+  hero: { badge: 'Game Dev · Technical Design · QA', namePlaceholder: 'Joaquin Augusto Salinas Tuesta', role: 'Technical Game Designer · Gameplay Programmer · Technical QA', intro: 'Estudante de Game Design com experiência prática no desenvolvimento de projetos em Unity usando C#. Trabalhei com sistemas de gameplay, design técnico, otimização de desempenho e QA técnico, combinando implementação, playtesting e debugging.', tags: ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/GitHub'], specializationsAria: 'Áreas de especialização', aspiration: 'Busco oportunidades em Game Design ou Technical Game Design para contribuir em projetos reais enquanto continuo desenvolvendo minhas habilidades técnicas e de design.', ctaProjects: 'Ver projetos', ctaCv: 'Baixar Resume', ctaCvAria: 'Baixar Resume em PDF', ctaContact: 'Contato', profileAvailable: 'Disponível', profileAlt: 'Foto profissional — pendente' },
 
-  about: {
-    badge: 'Sobre mim',
-    title: 'Perfil e trajetória',
-    intro1:
-      'Texto de apresentação provisório — pendente de validação. Trabalho na interseção entre desenvolvimento de jogos, design técnico e garantia de qualidade: tanto me interessa construir sistemas de jogo quanto garantir que funcionem como deveriam antes de chegar às mãos do jogador.',
-    intro2:
-      'Texto provisório — trajetória profissional e acadêmica pendente de dados reais. O percurso concreto (formação, experiência e projetos) está detalhado na linha do tempo abaixo.',
-    interestsAria: 'Interesses profissionais',
-    interests: [
-      'Design de sistemas de jogo',
-      'Programação de gameplay',
-      'Qualidade e testes (QA)',
-      'Resolução de problemas técnicos',
-    ],
-  },
+  about: { badge: 'Sobre mim', title: 'Perfil e trajetória', intro1: 'Estudo Game Design e Digital Entertainment e tenho experiência prática no desenvolvimento de projetos em Unity com C#. Meu trabalho se concentra em sistemas de gameplay, documentação de design, balanceamento, otimização e QA técnico.', intro2: 'Em projetos acadêmicos implementei mecânicas, trabalhei com arquitetura modular e sistemas procedurais, realizei playtesting e debugging e colaborei por meio de Git/GitHub.', interestsAria: 'Interesses profissionais', interests: ['Gameplay Systems', 'Technical Game Design', 'Gameplay Balancing', 'Technical QA'] },
 
-  timeline: {
-    categoryLabels: {
-      education: 'Formação',
-      experience: 'Experiência',
-      project: 'Projeto relevante',
-      milestone: 'Marco profissional',
-    },
-    statusLabels: {
-      completed: 'Concluído',
-      'in-progress': 'Em andamento',
-      upcoming: 'Próximo',
-    },
-    currentBadge: 'Atual',
-    entries: {
-      'education-base': {
-        title: 'Formação pendente de confirmação',
-        context: 'Instituição a confirmar',
-        description:
-          'Texto provisório: formação acadêmica ou técnica de base (curso, bootcamp, etc.). Substituir pela instituição, título exato e período reais.',
-      },
-      'milestone-first-project': {
-        title: 'Primeiro projeto relevante (pendente)',
-        context: 'Contexto a confirmar',
-        description:
-          'Texto provisório: marco profissional ou acadêmico significativo (p. ex. primeira game jam, primeiro projeto publicado). Substituir pelo marco real.',
-      },
-      'experience-current': {
-        title: 'Cargo atual pendente de confirmação',
-        context: 'Empresa ou organização a confirmar',
-        description:
-          'Texto provisório: experiência profissional atual como Game Developer / Technical Designer / QA. Substituir pelo cargo, empresa e responsabilidades reais.',
-      },
-      'project-featured': {
-        title: 'Projeto em destaque (pendente)',
-        context: 'Projeto a confirmar',
-        description:
-          'Texto provisório: um projeto especialmente representativo do perfil (não necessariamente o mesmo exibido na seção Projetos). Substituir assim que confirmado.',
-      },
-    },
-  },
+  timeline: { categoryLabels: { education: 'Formação', experience: 'Experiência', project: 'Projeto relevante', milestone: 'Marco profissional' }, statusLabels: { completed: 'Concluído', 'in-progress': 'Em andamento', upcoming: 'Próximo' }, currentBadge: 'Atual', entries: { 'education-toulouse': { period: 'Mar. 2023 — Atualmente', title: 'Game Design and Digital Entertainment', context: 'Toulouse Lautrec · Peru', description: 'Formação técnica em Game Design and Digital Entertainment, atualmente em andamento.' }, 'project-eden-404': { period: 'Mar. 2025 — Jul. 2025', title: 'Eden 404', context: 'FPS 3D · Projeto acadêmico', description: 'Implementação de mecânicas de gameplay e sistemas de interação, resolução de problemas de estabilidade e desempenho e otimização de sistemas procedurais.' }, 'project-forsaken-rules': { period: 'Set. 2025 — Jul. 2026', title: 'Forsaken Rules', context: 'Roguelike isométrico 3D · Publicado na Steam', description: 'Desenvolvimento de sistemas de gameplay em Unity/C#, arquitetura modular, playtesting técnico contínuo e contribuição para otimização e estabilidade.' }, 'project-franklins-journey': { period: 'Set. 2025 — Nov. 2025', title: "Franklin's Journey", context: 'Bullet Hell 2D · Android', description: 'Desenvolvimento de sistema eficiente de gerenciamento de projéteis, otimização móvel e validação funcional.' }, 'recognition-guardianes': { period: 'Maio 2026', title: 'Certificado de Contribuição', context: 'Asociación Civil Turismo Cuida', description: 'Reconhecimento pela contribuição ao projeto educacional Guardianes del Humedal com sistemas de gameplay funcionais.' } } },
 
-  projects: {
-    badge: 'Projetos',
-    title: 'Projetos',
-    lead: 'Uma amostra de projetos de desenvolvimento de jogos, design técnico e QA. O conteúdo desta seção ainda é um exemplo — será substituído por projetos reais em breve.',
-    filtersAria: 'Filtrar projetos por plataforma',
-    filters: {
-      all: 'Todos',
-      pc: 'PC',
-      mobile: 'Celular',
-      console: 'Console',
-      multiplatform: 'Multiplataforma',
-    },
-    emptyMessage: 'Nenhum projeto corresponde a este filtro ainda.',
-    listAria: 'Lista de projetos',
-    roleLabel: 'Função',
-    engineLabel: 'Engine',
-    techListAria: 'Tecnologias',
-    placeholderTag: 'Conteúdo pendente de confirmação',
-    githubAction: 'GitHub',
-    githubAria: (project) => `Repositório de ${project} no GitHub`,
-    youtubeAction: 'YouTube',
-    youtubeAria: (project) => `Ver ${project} no YouTube`,
-    downloadAction: 'Baixar',
-    downloadAria: (project) => `Baixar ${project}`,
-    storeAria: (project, store) => `${project} na ${store}`,
-    statusLabels: {
-      completed: 'Completed',
-      'in-development': 'In Development',
-      prototype: 'Prototype',
-      'game-jam': 'Game Jam',
-    },
-    platformLabels: {
-      pc: 'PC',
-      mobile: 'Celular',
-      console: 'Console',
-      web: 'Web',
-    },
-    platformSoloPrefix: 'Somente',
-    platformMultiLabel: 'Multiplataforma',
-    platformUnknownLabel: 'A confirmar',
-    entries: {
-      'proyecto-placeholder-uno': {
-        name: 'Projeto em destaque (pendente)',
-        shortDescription: 'Texto provisório: descrição curta de um projeto de gameplay/sistemas. Substituir pelo projeto real.',
-        role: 'Função a confirmar',
-      },
-      'proyecto-placeholder-dos': {
-        name: 'Game Jam (pendente)',
-        shortDescription: 'Texto provisório: projeto realizado em uma game jam. Substituir pelo nome e contexto reais do jam.',
-        role: 'Função a confirmar',
-      },
-      'proyecto-placeholder-tres': {
-        name: 'Projeto mobile (pendente)',
-        shortDescription: 'Texto provisório: projeto multiplataforma com foco em QA/testes. Substituir pelo projeto real.',
-        role: 'Função a confirmar',
-      },
-      'proyecto-placeholder-cuatro': {
-        name: 'Projeto concluído (pendente)',
-        shortDescription: 'Texto provisório: projeto encerrado, sem links públicos ainda. Substituir assim que confirmado.',
-        role: 'Função a confirmar',
-      },
-    },
-  },
+  projects: { badge: 'Projetos', title: 'Projetos', lead: 'Projetos acadêmicos em que trabalhei principalmente com gameplay programming, design técnico, otimização e QA usando Unity, C# e Git/GitHub.', filtersAria: 'Filtrar projetos por plataforma', filters: { all: 'Todos', pc: 'PC', mobile: 'Mobile', console: 'Console', multiplatform: 'Multiplataforma' }, emptyMessage: 'Nenhum projeto corresponde a este filtro.', listAria: 'Lista de projetos', roleLabel: 'Função', engineLabel: 'Engine', techListAria: 'Tecnologias e áreas', placeholderTag: 'Conteúdo pendente', githubAction: 'GitHub', githubAria: (project) => `Repositório de ${project} no GitHub`, youtubeAction: 'Ver vídeo', youtubeAria: (project) => `Ver vídeo de ${project} no YouTube`, downloadAction: 'Baixar', downloadAria: (project) => `Baixar ${project}`, storeAria: (project, store) => `${project} na ${store}`, statusLabels: { completed: 'Concluído', 'in-development': 'Em desenvolvimento', prototype: 'Protótipo', 'game-jam': 'Game Jam' }, platformLabels: { pc: 'PC', mobile: 'Mobile', console: 'Console', web: 'Web' }, platformSoloPrefix: 'Somente', platformMultiLabel: 'Multiplataforma', platformUnknownLabel: 'A confirmar', entries: { 'forsaken-rules': { imageAlt: 'Captura de Forsaken Rules — pendente', name: 'Forsaken Rules', shortDescription: 'Roguelike isométrico 3D publicado na Steam. Desenvolvimento de sistemas de gameplay e mecânicas em Unity/C#, arquitetura modular, playtesting técnico e otimização.', role: 'Gameplay Programmer / Technical Game Designer' }, 'eden-404': { imageAlt: 'Captura de Eden 404 — pendente', name: 'Eden 404', shortDescription: 'FPS 3D em que implementei mecânicas de gameplay e sistemas de interação, resolvi problemas de estabilidade e desempenho e otimizei sistemas procedurais.', role: 'Gameplay Programmer / Technical Designer' }, 'franklins-journey': { imageAlt: "Captura de Franklin's Journey — pendente", name: "Franklin's Journey", shortDescription: 'Bullet Hell 2D para Android. Desenvolvi um sistema eficiente de projéteis, otimizei o desempenho móvel e realizei validação funcional.', role: 'Gameplay Programmer' } } },
 
-  skills: {
-    badge: 'Habilidades',
-    title: 'Habilidades',
-    lead: 'Uma combinação de conhecimentos técnicos e habilidades interpessoais aplicadas ao desenvolvimento de jogos, design técnico e QA. Os itens exibidos são exemplos pendentes de confirmação com o conteúdo definitivo.',
-    technicalHeading: 'Habilidades técnicas',
-    softHeading: 'Habilidades interpessoais',
-    softListAria: 'Habilidades interpessoais',
-    groupLabels: {
-      language: 'Linguagens',
-      engine: 'Engines',
-      tool: 'Ferramentas e fluxo de trabalho',
-      other: 'Outros',
-    },
-    placeholderTag: 'Conteúdo pendente de confirmação',
-    softSkills: {
-      'soft-teamwork': {
-        name: 'Trabalho em equipe',
-        description: 'Texto provisório: colaboração com equipes multidisciplinares (design, arte, programação, QA).',
-      },
-      'soft-communication': {
-        name: 'Comunicação técnica',
-        description: 'Texto provisório: capacidade de explicar problemas e soluções técnicas a perfis não técnicos.',
-      },
-      'soft-problem-solving': {
-        name: 'Resolução de problemas',
-        description: 'Texto provisório: diagnóstico e resolução metódica de bugs e problemas de design de sistemas.',
-      },
-      'soft-attention-detail': {
-        name: 'Atenção aos detalhes',
-        description: 'Texto provisório: mentalidade de QA aplicada também ao próprio desenvolvimento.',
-      },
-      'soft-adaptability': {
-        name: 'Aprendizado contínuo',
-        description: 'Texto provisório: adaptação a novas ferramentas, engines e fluxos de trabalho.',
-      },
-      'soft-time-management': {
-        name: 'Gestão do tempo',
-        description: 'Texto provisório: organização de tarefas sob prazos apertados (game jams, sprints).',
-      },
-    },
-  },
+  skills: { badge: 'Habilidades', title: 'Habilidades', lead: 'Competências técnicas aplicadas ao desenvolvimento de jogos, design de sistemas, otimização e QA.', technicalHeading: 'Habilidades técnicas', softHeading: 'Habilidades interpessoais', softListAria: 'Habilidades interpessoais', groupLabels: { language: 'Programação', engine: 'Engine', tool: 'Ferramentas e fluxo', other: 'Design, desenvolvimento e QA' }, placeholderTag: 'Conteúdo pendente', softSkills: {} },
 
-  certificates: {
-    badge: 'Certificados',
-    title: 'Certificados',
-    lead: 'Certificações locais e internacionais relacionadas a desenvolvimento de jogos, design técnico e QA.',
-    categoryLabels: {
-      local: 'Certificados locais',
-      global: 'Certificados globais',
-    },
-    syncingText: 'Sincronizando certificados…',
-    doneText: 'Nenhum certificado disponível no momento.',
-    verifyAction: 'Verificar',
-    verifyAria: (name) => `Verificar credencial: ${name}`,
-    statusLabels: {
-      active: 'Válido',
-      expired: 'Expirado',
-      'in-progress': 'Em andamento',
-    },
-  },
+  certificates: { badge: 'Certificados', title: 'Certificados e reconhecimento', lead: 'Reconhecimentos e credenciais relacionados a projetos de desenvolvimento de jogos.', categoryLabels: { local: 'Reconhecimentos locais', global: 'Credenciais globais' }, syncingText: 'Registro pendente', doneText: 'Ainda não há credenciais nesta categoria.', verifyAction: 'Verificar', verifyAria: (name) => `Verificar credencial: ${name}`, statusLabels: { active: 'Emitido', expired: 'Expirado', 'in-progress': 'Em andamento' }, entries: { 'tourism-care-contribution': { name: 'Certificado de Contribuição', issuer: 'Asociación Civil Turismo Cuida', description: 'Reconhecimento pela contribuição ao projeto educacional Guardianes del Humedal com sistemas de gameplay funcionais.' } } },
 
-  contact: {
-    badge: 'Contato',
-    title: 'Vamos conversar',
-    lead: 'Convite provisório — texto pendente de validação. Um projeto, uma oportunidade, ou simplesmente vontade de falar sobre desenvolvimento de jogos? Estes são os canais para entrar em contato.',
-    listAria: 'Formas de contato',
-    pendingTag: 'Pendente de confirmação',
-    copyLabel: 'Copiar',
-    copiedLabel: 'Copiado',
-    copyErrorLabel: 'Não foi possível copiar',
-    copyAria: (label) => `Copiar ${label} para a área de transferência`,
-    methods: {
-      'contact-email': {
-        label: 'E-mail',
-        description: 'A forma mais direta de falar sobre uma oportunidade, colaboração ou projeto.',
-        accessibleLabel: 'Enviar um e-mail — endereço pendente de confirmação',
-      },
-      'contact-github': {
-        label: 'GitHub',
-        description: 'Repositórios e código de projetos pessoais e colaborativos.',
-        accessibleLabel: 'Abrir perfil do GitHub (abre em uma nova aba) — link pendente de confirmação',
-      },
-      'contact-linkedin': {
-        label: 'LinkedIn',
-        description: 'Trajetória e experiência profissional.',
-        accessibleLabel: 'Abrir perfil do LinkedIn (abre em uma nova aba) — link pendente de confirmação',
-      },
-      'contact-itchio': {
-        label: 'itch.io',
-        description: 'Projetos e protótipos de jogos publicados.',
-        accessibleLabel: 'Abrir perfil do itch.io (abre em uma nova aba) — link pendente de confirmação',
-      },
-    },
-  },
+  contact: { badge: 'Contato', title: 'Vamos conversar', lead: 'Para conversar sobre uma oportunidade, colaboração ou projeto de desenvolvimento de jogos, você pode entrar em contato por estes canais.', listAria: 'Métodos de contato', pendingTag: 'Pendente', copyLabel: 'Copiar', copiedLabel: 'Copiado', copyErrorLabel: 'Não foi possível copiar', copyAria: (label) => `Copiar ${label} para a área de transferência`, methods: { 'contact-email': { label: 'Email', description: 'Contato direto para oportunidades, colaborações ou projetos.', accessibleLabel: 'Enviar um email para Joaquin Salinas' }, 'contact-github': { label: 'GitHub', description: 'Código e repositórios de projetos de jogos.', accessibleLabel: 'Abrir o perfil do GitHub de Joaquin Salinas em uma nova aba' }, 'contact-linkedin': { label: 'LinkedIn', description: 'Perfil profissional, formação e trajetória.', accessibleLabel: 'Abrir o perfil do LinkedIn de Joaquin Salinas em uma nova aba' } } },
 
-  footer: {
-    namePlaceholder: 'Nome Sobrenome',
-    role: 'Game Developer · Technical Designer · QA',
-    lastUpdateLabel: 'Última atualização',
-    systemStatusLabel: 'SYSTEM STATUS',
-    onlineLabel: 'ONLINE',
-    backToTopAria: 'Voltar ao topo',
-  },
+  footer: { namePlaceholder: 'Joaquin Augusto Salinas Tuesta', role: 'Technical Game Designer · Gameplay Programmer · Technical QA', lastUpdateLabel: 'Última atualização', systemStatusLabel: 'SYSTEM STATUS', onlineLabel: 'ONLINE', backToTopAria: 'Voltar ao topo' },
 };
 
 export default pt;
