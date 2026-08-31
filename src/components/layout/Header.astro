@@ -455,12 +455,33 @@ const navItems: NavItem[] = [
     const nav = header.querySelector<HTMLElement>('[data-nav]');
     const navLinks = header.querySelectorAll<HTMLAnchorElement>('[data-nav-id]');
     const closeLinks = header.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    const mainContent = document.querySelector<HTMLElement>('main');
+    const footer = document.querySelector<HTMLElement>('footer');
 
     const isMobileMenuOpen = () => header.dataset.mobileOpen === 'true';
+
+    const setBackgroundInert = (inert: boolean) => {
+      [mainContent, footer].forEach((element) => {
+        if (!element) return;
+        if (inert) element.setAttribute('inert', '');
+        else element.removeAttribute('inert');
+      });
+    };
+
+    const getMobileFocusables = () => {
+      const candidates = Array.from(
+        header.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+      );
+      return candidates.filter((element) => {
+        const style = window.getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0;
+      });
+    };
 
     const closeMobileMenu = (restoreFocus = false) => {
       delete header.dataset.mobileOpen;
       delete document.documentElement.dataset.mobileNavOpen;
+      setBackgroundInert(false);
       mobileToggle?.setAttribute('aria-expanded', 'false');
       if (mobileToggle) {
         mobileToggle.setAttribute('aria-label', mobileToggle.dataset.labelOpen ?? 'Abrir menú de navegación');
@@ -471,8 +492,14 @@ const navItems: NavItem[] = [
     const openMobileMenu = () => {
       header.dataset.mobileOpen = 'true';
       document.documentElement.dataset.mobileNavOpen = 'true';
+      setBackgroundInert(true);
       mobileToggle?.setAttribute('aria-expanded', 'true');
       mobileToggle?.setAttribute('aria-label', mobileToggle.dataset.labelClose ?? 'Cerrar menú de navegación');
+
+      // El drawer ocupa el viewport: al abrirlo, el foco entra en la
+      // navegación para que usuarios de teclado no recorran contenido que
+      // visualmente quedó cubierto por el menú.
+      requestAnimationFrame(() => navLinks[0]?.focus());
     };
 
     // -- menú móvil --
@@ -492,7 +519,30 @@ const navItems: NavItem[] = [
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && isMobileMenuOpen()) closeMobileMenu(true);
+      if (!isMobileMenuOpen()) return;
+
+      if (event.key === 'Escape') {
+        closeMobileMenu(true);
+        return;
+      }
+
+      // Focus trap solo mientras el drawer móvil está abierto. Así el foco
+      // permanece dentro de los controles visibles del Header hasta cerrar
+      // o elegir una sección.
+      if (event.key === 'Tab' && window.innerWidth <= MOBILE_BREAKPOINT) {
+        const focusables = getMobileFocusables();
+        if (focusables.length === 0) return;
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     });
 
     // Al volver a escritorio no debe quedar un drawer/scroll-lock móvil

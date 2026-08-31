@@ -147,6 +147,7 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
     opacity: 0.35;
     stroke-dasharray: 6 10;
     animation: flow 5s linear infinite;
+    animation-play-state: paused;
   }
 
   .network-visual__edge--gold {
@@ -170,8 +171,14 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
     stroke: var(--raw-blue-300);
     stroke-width: 1.5;
     animation: node-breathe 4.5s var(--ease-standard) infinite;
+    animation-play-state: paused;
     transform-box: fill-box;
     transform-origin: center;
+  }
+
+  .network-visual[data-in-viewport='true'] .network-visual__edge,
+  .network-visual[data-in-viewport='true'] .network-visual__node {
+    animation-play-state: running;
   }
 
   .network-visual__node--hub {
@@ -246,22 +253,29 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
     const group = root.querySelector<SVGGElement>('[data-network-group]');
     if (!group) return;
 
-    // Entrada discreta al aparecer en pantalla.
+    // Entrada discreta y control de actividad: las animaciones SVG solo
+    // permanecen activas mientras esta visualización está en el viewport.
+    // Esto evita gasto continuo de CPU/GPU cuando el usuario ya está en
+    // secciones inferiores del portafolio.
+    let visibilityObserver: IntersectionObserver | null = null;
     if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(
+      visibilityObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               root.dataset.visible = 'true';
-              io.disconnect();
+              root.dataset.inViewport = 'true';
+            } else {
+              delete root.dataset.inViewport;
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.05 }
       );
-      io.observe(root);
+      visibilityObserver.observe(root);
     } else {
       root.dataset.visible = 'true';
+      root.dataset.inViewport = 'true';
     }
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -277,36 +291,49 @@ const byId = (id: string) => nodes.find((n) => n.id === id)!;
     let currentY = 0;
     const maxOffset = 10;
 
+    let rafId = 0;
+
+    const tick = () => {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      group.style.transform = `translate(${currentX}px, ${currentY}px)`;
+
+      // Antes este requestAnimationFrame quedaba activo de forma indefinida,
+      // incluso sin interacción. Se detiene cuando el desplazamiento ya es
+      // imperceptible y vuelve a arrancar únicamente cuando cambia el objetivo.
+      const stillMoving = Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05;
+      if (stillMoving) rafId = requestAnimationFrame(tick);
+      else rafId = 0;
+    };
+
+    const requestTick = () => {
+      if (rafId === 0) rafId = requestAnimationFrame(tick);
+    };
+
     const handlePointerMove = (e: PointerEvent) => {
       const rect = root.getBoundingClientRect();
       const relX = (e.clientX - rect.left) / rect.width - 0.5;
       const relY = (e.clientY - rect.top) / rect.height - 0.5;
       targetX = relX * maxOffset * 2;
       targetY = relY * maxOffset * 2;
+      requestTick();
     };
 
     const handlePointerLeave = () => {
       targetX = 0;
       targetY = 0;
+      requestTick();
     };
 
-    root.addEventListener('pointermove', handlePointerMove);
-    root.addEventListener('pointerleave', handlePointerLeave);
-
-    let rafId: number;
-    const tick = () => {
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
-      group.style.transform = `translate(${currentX}px, ${currentY}px)`;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
+    root.addEventListener('pointermove', handlePointerMove, { passive: true });
+    root.addEventListener('pointerleave', handlePointerLeave, { passive: true });
 
     // Limpieza si el nodo se desmonta (navegación con ClientRouter).
     document.addEventListener(
       'astro:before-swap',
       () => {
-        cancelAnimationFrame(rafId);
+        visibilityObserver?.disconnect();
+        if (rafId !== 0) cancelAnimationFrame(rafId);
         root.removeEventListener('pointermove', handlePointerMove);
         root.removeEventListener('pointerleave', handlePointerLeave);
       },

@@ -22,7 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
 if (canonicalURL.protocol === 'http:') canonicalURL.protocol = 'https:';
 
 const socialImageURL = new URL(withBase('/social-preview.png'), siteOrigin);
-const profileImageURL = new URL(withBase('/images/profile/joaquin-salinas.jpg'), siteOrigin);
+const profileImageURL = new URL(withBase('/images/profile/joaquin-salinas.webp'), siteOrigin);
 const homeURL = new URL(withBase('/'), siteOrigin);
 
 const structuredData = {

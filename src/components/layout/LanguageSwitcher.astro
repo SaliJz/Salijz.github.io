@@ -12,9 +12,10 @@ import { languages } from '@/i18n/languages';
   <button
     type="button"
     class="lang-switcher__trigger"
-    aria-haspopup="listbox"
+    aria-haspopup="menu"
     aria-expanded="false"
     aria-label="Cambiar idioma"
+    aria-controls="language-menu"
     data-lang-trigger
   >
     <span class="lang-switcher__current" data-lang-current>ES</span>
@@ -22,10 +23,17 @@ import { languages } from '@/i18n/languages';
     <span class="sr-only">Cambiar idioma</span>
   </button>
 
-  <ul class="lang-switcher__menu" role="listbox" aria-label="Seleccionar idioma" data-lang-menu>
+  <ul id="language-menu" class="lang-switcher__menu" role="menu" aria-label="Seleccionar idioma" data-lang-menu>
     {languages.map((lang) => (
-      <li role="option" aria-selected={lang.code === 'es'}>
-        <button type="button" class="lang-switcher__option" data-lang-option data-lang-code={lang.code}>
+      <li role="none">
+        <button
+          type="button"
+          role="menuitemradio"
+          aria-checked={lang.code === 'es'}
+          class="lang-switcher__option"
+          data-lang-option
+          data-lang-code={lang.code}
+        >
           <span class="lang-switcher__option-code">{lang.nativeLabel}</span>
           <span class="lang-switcher__option-label">{lang.label}</span>
         </button>
@@ -66,7 +74,7 @@ import { languages } from '@/i18n/languages';
     transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
   }
   .lang-switcher__option:hover { background-color: var(--color-bg-surface-alt); color: var(--color-text-primary); }
-  .lang-switcher__option[aria-selected='true'] { color: var(--color-accent); }
+  .lang-switcher__option[aria-checked='true'] { color: var(--color-accent); }
   .lang-switcher__option-code { font-family: var(--font-tech); font-size: var(--text-xs); font-weight: var(--font-weight-semibold); color: var(--color-text-muted); min-width: 2ch; }
 
 
@@ -152,8 +160,7 @@ import { languages } from '@/i18n/languages';
       currentLabel.textContent = meta.nativeLabel;
       options.forEach((opt) => {
         const selected = opt.dataset.langCode === code;
-        opt.setAttribute('aria-selected', String(selected));
-        opt.closest('[role="option"]')?.setAttribute('aria-selected', String(selected));
+        opt.setAttribute('aria-checked', String(selected));
       });
     };
 
@@ -166,12 +173,61 @@ import { languages } from '@/i18n/languages';
       trigger.focus();
     };
 
-    trigger.addEventListener('click', () => setOpen(root.dataset.open !== 'true'));
-    options.forEach((opt) => opt.addEventListener('click', () => selectLanguage(opt.dataset.langCode ?? DEFAULT_LANG)));
-    document.addEventListener('click', (event) => { if (!root.contains(event.target as Node)) setOpen(false); });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && root.dataset.open === 'true') { setOpen(false); trigger.focus(); }
+    const focusOption = (index: number) => {
+      const optionList = Array.from(options);
+      if (optionList.length === 0) return;
+      const normalized = (index + optionList.length) % optionList.length;
+      optionList[normalized]?.focus();
+    };
+
+    const focusSelectedOption = () => {
+      const optionList = Array.from(options);
+      const selectedIndex = optionList.findIndex((opt) => opt.getAttribute('aria-checked') === 'true');
+      focusOption(selectedIndex >= 0 ? selectedIndex : 0);
+    };
+
+    trigger.addEventListener('click', () => {
+      const opening = root.dataset.open !== 'true';
+      setOpen(opening);
+      if (opening) requestAnimationFrame(focusSelectedOption);
     });
+
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        setOpen(true);
+        requestAnimationFrame(() => {
+          if (event.key === 'ArrowUp') focusOption(options.length - 1);
+          else focusSelectedOption();
+        });
+      }
+    });
+
+    options.forEach((opt) => opt.addEventListener('click', () => selectLanguage(opt.dataset.langCode ?? DEFAULT_LANG)));
+
+    root.querySelector<HTMLElement>('[data-lang-menu]')?.addEventListener('keydown', (event) => {
+      const optionList = Array.from(options);
+      const currentIndex = optionList.indexOf(document.activeElement as HTMLButtonElement);
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        focusOption(currentIndex + 1);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        focusOption(currentIndex - 1);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        focusOption(0);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        focusOption(optionList.length - 1);
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false);
+        trigger.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => { if (!root.contains(event.target as Node)) setOpen(false); });
 
     let saved = DEFAULT_LANG;
     try {

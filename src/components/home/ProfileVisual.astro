@@ -23,7 +23,16 @@ const { src, alt = 'Fotografía profesional — próximamente' } = Astro.props;
   <div class="profile-visual__frame">
     {
       src ? (
-        <img src={src} alt={alt} class="profile-visual__photo" width="320" height="320" />
+        <img
+          src={src}
+          alt={alt}
+          class="profile-visual__photo"
+          width="320"
+          height="320"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
       ) : (
         <div class="profile-visual__placeholder" role="img" aria-label={alt}>
           <User size={64} stroke-width={1.25} />

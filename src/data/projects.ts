@@ -98,7 +98,7 @@ export const projects: Project[] = [
     shortDescription:
       'Roguelike isométrico 3D publicado en Steam. Desarrollo de sistemas de gameplay y mecánicas en Unity/C#, arquitectura modular, playtesting técnico y optimización.',
     image: {
-      src: withBase('/images/projects/forsaken-rules.jpg'),
+      src: withBase('/images/projects/forsaken-rules.webp'),
       alt: 'Arte promocional de Forsaken Rules con logotipo y personajes del juego',
     },
     role: 'Gameplay Programmer / Technical Game Designer',
@@ -123,7 +123,7 @@ export const projects: Project[] = [
     shortDescription:
       'FPS 3D en el que implementé mecánicas de gameplay y sistemas de interacción, resolví problemas de estabilidad y rendimiento y optimicé sistemas procedurales.',
     image: {
-      src: withBase('/images/projects/eden-404.png'),
+      src: withBase('/images/projects/eden-404.webp'),
       alt: 'Imagen promocional de Eden 404 con personaje principal y logotipo del proyecto',
     },
     role: 'Gameplay Programmer / Technical Designer',
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     shortDescription:
       'Bullet Hell 2D para Android. Desarrollé un sistema eficiente para la generación masiva de proyectiles, optimicé el rendimiento móvil y realicé validación funcional.',
     image: {
-      src: withBase('/images/projects/el-viaje-de-franklin.jpg'),
+      src: withBase('/images/projects/el-viaje-de-franklin.webp'),
       alt: 'Pantalla de título de El Viaje de Franklin',
     },
     role: 'Gameplay Programmer',

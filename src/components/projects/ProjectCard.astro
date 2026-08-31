@@ -48,8 +48,11 @@ const hasRealAction = !project.isPlaceholder && Boolean(
         <img
           src={project.image.src}
           alt={project.image.alt}
+          width="1280"
+          height="720"
           loading="lazy"
           decoding="async"
+          fetchpriority="low"
           class="project-card__image"
         />
       ) : (
