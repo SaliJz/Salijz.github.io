@@ -383,19 +383,23 @@ const navItems: NavItem[] = [
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
 
-      opacity: 0;
+      /* El panel conserva un fondo totalmente opaco durante toda la
+         transición. Antes se animaba `opacity` sobre el drawer completo y,
+         al reabrirlo durante un scroll suave, el contenido de la página se
+         transparentaba brevemente detrás del menú. */
       visibility: hidden;
+      pointer-events: none;
       transform: translateY(-8px);
       transition:
-        opacity var(--duration-base) var(--ease-out),
         transform var(--duration-base) var(--ease-out),
-        visibility var(--duration-base);
+        visibility 0s linear var(--duration-base);
     }
 
     .header[data-mobile-open='true'] .nav {
-      opacity: 1;
       visibility: visible;
+      pointer-events: auto;
       transform: translateY(0);
+      transition-delay: 0s;
     }
 
     .nav__list {

@@ -43,7 +43,7 @@ const en: Dictionary = {
     ctaCvAria: 'Download résumé as PDF',
     ctaContact: 'Contact',
     profileAvailable: 'Available',
-    profileAlt: 'Professional photo — pending',
+    profileAlt: 'Professional photo of Joaquin Augusto Salinas Tuesta',
   },
 
   about: {

@@ -5,13 +5,12 @@
  * como un footer web tradicional (sin columnas de enlaces, sin "© 2026
  * Todos los derechos reservados" en tipografía genérica).
  *
- * Todo el contenido es placeholder: los datos reales (nombre, especialidad,
- * versión, fecha) llegarán con `src/data/site.ts` en una etapa posterior.
- * El botón "volver arriba" sí es funcional ya en esta etapa.
+ * Contiene la identidad profesional, versión del sitio, fecha de última
+ * actualización, estado visual y acceso rápido para volver al inicio.
  */
 import { ArrowUp, CircleDot } from '@lucide/astro';
 
-const placeholder = {
+const siteInfo = {
   name: 'Joaquin Augusto Salinas Tuesta',
   role: 'Technical Game Designer · Technical QA · Gameplay Programmer',
   version: 'PORTFOLIO',
@@ -22,15 +21,15 @@ const placeholder = {
 <footer class="status-bar" data-status-bar>
   <div class="status-bar__inner">
     <div class="status-bar__group">
-      <span class="status-bar__item status-bar__item--name">{placeholder.name}</span>
+      <span class="status-bar__item status-bar__item--name">{siteInfo.name}</span>
       <span class="status-bar__separator" aria-hidden="true">·</span>
-      <span class="status-bar__item status-bar__item--muted">{placeholder.role}</span>
+      <span class="status-bar__item status-bar__item--muted">{siteInfo.role}</span>
     </div>
 
     <div class="status-bar__group status-bar__group--center">
-      <span class="status-bar__item status-bar__item--muted">{placeholder.version}</span>
+      <span class="status-bar__item status-bar__item--muted">{siteInfo.version}</span>
       <span class="status-bar__separator" aria-hidden="true">·</span>
-      <span class="status-bar__item status-bar__item--muted" data-last-update={placeholder.lastUpdate}>Última actualización: {placeholder.lastUpdate}</span>
+      <span class="status-bar__item status-bar__item--muted" data-last-update={siteInfo.lastUpdate}>Última actualización: {siteInfo.lastUpdate}</span>
     </div>
 
     <div class="status-bar__group status-bar__group--end">

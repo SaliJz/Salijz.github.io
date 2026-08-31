@@ -5,8 +5,8 @@
  * Dos columnas en escritorio: izquierda (foto + presentación + CTAs),
  * derecha (NetworkVisual). En móvil se apilan, visual debajo del texto.
  *
- * Contenido placeholder profesional (texto final pendiente): se marca
- * explícitamente para facilitar su reemplazo cuando exista el copy real.
+ * Contenido profesional real conectado al sistema i18n y a los assets
+ * públicos del portafolio.
  */
 import Button from '@/components/ui/Button.astro';
 import Badge from '@/components/ui/Badge.astro';
@@ -132,6 +132,7 @@ const specializations = ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/
   }
 
   .hero__content {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -201,6 +202,7 @@ const specializations = ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/
   }
 
   .hero__visual {
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;

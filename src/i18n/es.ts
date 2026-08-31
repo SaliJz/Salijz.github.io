@@ -50,7 +50,7 @@ const es: Dictionary = {
     ctaCvAria: 'Descargar CV en PDF',
     ctaContact: 'Contacto',
     profileAvailable: 'Disponible',
-    profileAlt: 'Fotografía profesional — pendiente de añadir',
+    profileAlt: 'Fotografía profesional de Joaquin Augusto Salinas Tuesta',
   },
 
   about: {

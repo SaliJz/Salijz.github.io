@@ -27,7 +27,7 @@ const zh: Dictionary = {
     langMenuAria: '选择语言',
   },
 
-  hero: { badge: 'Game Dev · Technical Design · QA', namePlaceholder: 'Joaquin Augusto Salinas Tuesta', role: 'Technical Game Designer · Technical QA · Gameplay Programmer', intro: '游戏设计专业学生，具有使用 Unity 和 C# 开发项目的实践经验。我参与过 gameplay 系统、技术设计、性能优化与 Technical QA，并结合功能实现、playtesting 和 debugging 提升游戏稳定性。', tags: ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/GitHub'], specializationsAria: '专业方向', aspiration: '我的职业方向主要聚焦于 Technical Game Design 和 Technical QA，并以 Gameplay Programming 经验作为补充。', ctaProjects: '查看项目', ctaCv: '下载 Resume', ctaCvAria: '下载英文 Resume PDF', ctaContact: '联系', profileAvailable: '可联系', profileAlt: '职业照片 — 待添加' },
+  hero: { badge: 'Game Dev · Technical Design · QA', namePlaceholder: 'Joaquin Augusto Salinas Tuesta', role: 'Technical Game Designer · Technical QA · Gameplay Programmer', intro: '游戏设计专业学生，具有使用 Unity 和 C# 开发项目的实践经验。我参与过 gameplay 系统、技术设计、性能优化与 Technical QA，并结合功能实现、playtesting 和 debugging 提升游戏稳定性。', tags: ['Unity + C#', 'Gameplay Systems', 'Technical QA', 'Git/GitHub'], specializationsAria: '专业方向', aspiration: '我的职业方向主要聚焦于 Technical Game Design 和 Technical QA，并以 Gameplay Programming 经验作为补充。', ctaProjects: '查看项目', ctaCv: '下载 Resume', ctaCvAria: '下载英文 Resume PDF', ctaContact: '联系', profileAvailable: '可联系', profileAlt: 'Joaquin Augusto Salinas Tuesta 的职业照片' },
 
   about: { badge: '关于我', title: '个人简介与经历', intro1: '我正在学习 Game Design and Digital Entertainment，并具有使用 Unity 与 C# 开发项目的实践经验。我的工作重点包括 gameplay 系统、设计文档、平衡、性能优化和 Technical QA。', intro2: '在学术项目中，我实现过游戏机制，参与模块化架构与程序化系统，进行 playtesting 与 debugging，并通过 Git/GitHub 进行协作。', interestsAria: '职业兴趣', interests: ['Gameplay Systems', 'Technical Game Design', 'Gameplay Balancing', 'Technical QA'] },
 

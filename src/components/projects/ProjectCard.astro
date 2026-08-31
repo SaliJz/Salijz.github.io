@@ -260,6 +260,16 @@ const hasRealAction = !project.isPlaceholder && Boolean(
   }
 
   @media (max-width: 480px) {
+    .project-card__heading {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1);
+    }
+
+    .project-card__platform {
+      white-space: normal;
+    }
+
     .project-card__actions {
       flex-direction: column;
       align-items: stretch;

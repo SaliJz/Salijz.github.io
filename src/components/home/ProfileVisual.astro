@@ -5,9 +5,9 @@
  * esquinas técnicas + indicador de estado), coherente con las tarjetas del
  * Design System — no es una imagen circular "pegada" sobre la página.
  *
- * Todavía no existe el asset definitivo: se usa un placeholder (icono +
- * superficie del Design System) claramente reemplazable. Cuando exista la
- * foto real, basta con pasar `src` para que se muestre en su lugar.
+ * La foto real se pasa mediante `src`. Se conserva un fallback visual
+ * únicamente para que el componente siga siendo reutilizable si el asset
+ * no estuviera disponible en una variante futura.
  */
 import { User, CircleDot } from '@lucide/astro';
 
@@ -16,7 +16,7 @@ interface Props {
   alt?: string;
 }
 
-const { src, alt = 'Fotografía profesional — próximamente' } = Astro.props;
+const { src, alt = 'Fotografía profesional de Joaquin Augusto Salinas Tuesta' } = Astro.props;
 ---
 
 <div class="profile-visual">
